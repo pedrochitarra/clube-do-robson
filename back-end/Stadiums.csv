@@ -1,0 +1,155 @@
+Stadium ID;Stadium Name;Home Team ID;Capacity
+1;Old Trafford;11;74879
+2;Estadio Santiago Bernabéu;243;81044
+5;San Siro;47;75923
+9;Signal Iduna Park;22;81365
+10;Estadio Mestalla;461;55000
+12;BayArena;32;30210
+13;Anfield;9;53394
+14;Parc des Princes;73;47929
+15;Johan Cruijff ArenA;245;54846
+26;_Forest Park Stadium (Square Ground);0;28421
+28;Stamford Bridge;5;40853
+29;Orange Vélodrome;219;67394
+30;VELTINS-Arena;34;62271
+32;_Crown Lane;0;24103
+33;_Union Park (Euro Arena);0;22685
+34;_Town Park;0;9821
+35;_Euro Park;0;12748
+41;Volksparkstadion;28;57000
+100;St. James' Park;13;52305
+104;Estadio Azteca;1879;81070
+112;Fratton Park;1790;19669
+113;St. Mary's Stadium;17;32384
+115;Villa Park;2;42682
+135;Olympiastadion;166;74475
+147;_Stadion Europa;0;32228
+149;_Al Jayeed Stadium (Stade Kokoto);0;33684
+153;_Aloha Park;0;10640
+155;Wembley Stadium;1318;90000
+156;Emirates Stadium;1;60260
+158;_Estadio de las Artes;0;37473
+161;Dignity Health Sports Park;697;27000
+172;_FeWC Stadium;0;51273
+175;_Arena del Centenario (Estadio del Pueblo);0;16827
+176;_Waldstadion (Fussballstadion);0;42987
+178;_Stadion Neder;0;19086
+179;_Stade Municipal;0;24628
+180;_Ivy Lane;0;30582
+181;_El Grandioso (El Monumento);0;66081
+182;_Stadion 23. Maj;0;17194
+183;_Estadio El Medio;0;30493
+192;_El Libertador (La Bombastico);0;52663
+193;_Stadio Classico;0;29756
+194;_Eastpoint Arena (Football Ground);0;53681
+195;_Stadion Olympik;0;68196
+196;_Stadion Hanguk;0;55299
+197;_O Dromo;0;55320
+212;_Estadio Presidente G.Lopes;0;27156
+228;_Court Lane;0;19677
+229;_Arena d'Oro;0;20058
+246;Etihad Stadium;10;55017
+248;BC Place;101112;22120
+249;_Molton Road (Sheldon Stadium);0;19787
+260;Donbass Arena;101059;52667
+261;_Sanderson Park;0;38841
+262;King Fahd Stadium;605;68752
+265;Goodison Park;7;39221
+316;_WC_FE Arena_Generic_NorthAmerica;0;500
+326;Stadium of Light;106;48707
+327;The Hawthorns;109;26850
+328;Craven Cottage;144;25700
+329;Carrow Road;1792;27244
+330;Selhurst Park;1799;25486
+331;Stoke City FC Stadium;1806;30089
+332;KCOM Stadium;1952;25586
+333;Liberty Stadium;1960;21088
+334;Cardiff City Stadium;1961;33316
+335;King Power Stadium;95;32273
+336;Turf Moor;1796;21994
+337;Kiyan Prince Foundation;15;18439
+340;The Amex Stadium;1808;30666
+341;CenturyLink Field;111144;37722
+343;BORUSSIA-PARK;23;54022
+345;King Abdullah Sports City;607;62241
+347;Vicarage Road;1795;21000
+348;Vitality Stadium;1943;11329
+349;Riverside Stadium;12;34000
+353;_generic_training_epl_BE;0;500
+354;Panasonic Stadium Suita;112093;39694
+355;London Stadium;19;60000
+364;Wanda Metropolitano;240;68456
+366;_generic_training_spain_BE;0;500
+378;Otkritie Arena;100767;45000
+384;Kirklees Stadium;1939;24169
+386;Estadio de la Cerámica;483;23500
+387;Estadio La Rosaleda;573;30044
+388;Estadio San Mamés;448;53331
+389;Ramón Sánchez-Pizjuán;481;43883
+390;Coliseum Alfonso Pérez;1860;17000
+391;Estadio de Gran Canaria;472;32400
+392;Estadio Benito Villamarín;449;60721
+393;RCDE Stadium;452;40500
+394;Estadio ABANCA-Balaídos;450;29000
+395;Municipal de Ipurua;467;8164
+396;Estadio Ciutat de València;1853;25354
+397;Reale Arena;457;40000
+398;Municipal de Butarque;100888;12454
+399;Estadio de Mendizorroza;463;19840
+400;Estadio de Montilivi;110062;11286
+402;Mercedes-Benz Stadium (Atlanta);112885;42500
+406;Volkswagen Arena;175;30000
+407;PreZero Arena;10029;30150
+408;_FE default_stadium;0;500
+409;Tottenham Hotspur Stadium;18;62303
+412;WWK Arena;100409;30660
+413;wohninvest Weserstadion;38;42100
+414;Opel Arena;169;33305
+415;Molineux Stadium;110;32050
+416;Deutsche Bank Park;1824;51500
+417;HDI-Arena;485;49200
+418;Mercedes-Benz Arena (Stuttgart);36;60449
+419;Düsseldorf-Arena;110636;54600
+420;Red Bull Arena (Leipzig);112172;42959
+422;Max-Morlock-Stadion;171;50000
+423;RheinEnergieStadion;31;50000
+426;Groupama Stadium;66;59186
+427;Estadio José Zorrilla;462;27618
+428;El Alcoraz;110839;7638
+429;Estadio de Vallecas;480;14708
+430;Red Bull Arena (New Jersey);689;25000
+431;Atatürk Olimpiyat Stad?;1365;76761
+432;Stadium_432;0;37890
+433;Bramall Lane;1794;32050
+435;Providence Park;111140;15000
+436;Benteler-Arena;10030;15000
+437;Stadium_437;0;23576
+438;Stadion An der Alten Försterei;1831;22012
+439;Estadio Nuevo Los Cármenes;110832;19436
+440;Visit Mallorca Estadi;453;23142
+441;Estadio Presidente Perón (El Cilindro);101085;46880
+442;Estadio Libertadores de América;110093;42069
+1000;_Warehouse;0;100
+1001;_Tokyo;0;100
+1003;_Parking Lot;0;100
+1004;_Rio;0;100
+1005;_New York;0;100
+1010;_Amsterdam;0;100
+1011;_Buenos Aires;0;100
+1012;_Rome;0;100
+1013;_London;0;100
+1015;_Miami;0;100
+1017;_Lagos;0;100
+1018;_Paris;0;100
+1019;_Dubai;0;100
+1020;_Volta Hub;0;100
+1021;_Mexico City;0;100
+1022;_Milan;0;100
+1023;_Paris Streets;0;100
+1024;_Sydney;0;100
+1033;_Berlin;0;100
+1034;_Paris Onboarding;0;100
+1035;_Sao Paulo;0;100
+1048;_Barcelona;0;100
+1075;_Venice;0;100
+1098;_Cape Town;0;100
