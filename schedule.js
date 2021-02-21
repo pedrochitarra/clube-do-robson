@@ -1,10 +1,7 @@
-const cool = require('cool-ascii-faces')
-const axios = require('axios')
-const bodyParser = require('body-parser')
-const logger = require('./common/logger')
-const { Pool, ClientBase } = require('pg')
-const { Clubes, Membros, Partidas, ClubesPartidas, MembrosPartidas, Seasonals } = require('./app/models')
-const getColors = require('get-image-colors')
+import axios from 'axios'
+import logger from './common/logger'
+import { Clubes, Membros, Partidas, ClubesPartidas, MembrosPartidas, Seasonals } from './app/models'
+import getColors from 'get-image-colors'
 const cron = require('node-cron')
 
 async function updateClub (clubId) {
@@ -109,7 +106,7 @@ async function updateMatches () {
     .then(async response => {
       const matchData = response.data
       // console.log(matchData)
-      const saveMatch = {}
+      // const saveMatch = {}
       let homePlayers = []
       let awayPlayers = []
       matchData.forEach(async md => {
@@ -142,7 +139,7 @@ async function updateMatches () {
         // UPDATE CLUBS IN THAT MATCH INFO
         // UPDATE HOME CLUB
         // let aggregateAway = md.aggregate[saveMatch.awayClubId]
-        const aggregateHome = md.aggregate[saveMatch.homeClubId]
+        // const aggregateHome = md.aggregate[saveMatch.homeClubId]
 
         await ClubesPartidas.upsert({
           clubMatchId: md.matchId + Object.keys(md.clubs)[0],
@@ -309,7 +306,7 @@ async function updateSeasonal () {
 
 updateSeasonal()
 
-function updateAssets () {
+/* function updateAssets () {
   const clubId = 6703918
   const config = {
     headers: {
@@ -322,9 +319,9 @@ function updateAssets () {
       Connection: 'keep-alive',
       Referer: 'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/'
     }
-    /* params: {
-        clubIds: clubId
-      } */
+    // params: {
+    //    clubIds: clubId
+    //  }
   }
 
   axios.get('https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/', config)
@@ -333,7 +330,7 @@ function updateAssets () {
     .catch(error => {
       console.log(error)
     })
-}
+} */
 
 async function getTeamColors (clubData) {
   const teamId = clubData.teamId
@@ -342,7 +339,7 @@ async function getTeamColors (clubData) {
   }
   const kitColors = {}
   // console.log(clubData.customKit.isCustomTeam)
-  if (clubData.customKit.isCustomTeam == '0') {
+  if (clubData.customKit.isCustomTeam === 0) {
     // logger.info("NOOOOO CUSTOOOOOOMMMMM")
     let teamColors = []
     const teamColorHex = []
@@ -382,7 +379,7 @@ async function getTeamColors (clubData) {
 
 function componentToHex (c) {
   const hex = c.toString(16)
-  return hex.length == 1 ? '0' + hex : hex
+  return hex.length === 1 ? '0' + hex : hex
 }
 
 function rgbToHex (r, g, b) {
@@ -394,7 +391,7 @@ cron.schedule('*/25 * * * *', async () => {
   await updateMatches()
 })
 
-var reqTimer = setTimeout(function wakeUp () {
+let reqTimer = setTimeout(function wakeUp () {
   axios.get('https://clubedorobson.herokuapp.com/', function () {
     console.log('WAKE UP DYNO')
   })
