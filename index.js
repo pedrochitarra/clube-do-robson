@@ -41,3 +41,5 @@ require('./app/routes/seasonals')(app)
 require('./app/routes/stadiums')(app)
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`))
+
+export default app
