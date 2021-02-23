@@ -5,7 +5,6 @@
   "engines": {
     "node": "12.x"
   },
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",

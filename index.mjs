@@ -2,8 +2,20 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import path from 'path'
+// app.set('views', path.join(__dirname, 'views'))
+// app.set('view engine', 'ejs')
+// app.get('/', (req, res) => res.render('pages/index'))
+import ClubesRoute from './app/routes/clubes.js'
+import ClubesPartidasRoute from './app/routes/clubesPartidas.js'
+import membrosRoute from './app/routes/membros.js'
+import membrosPartidasRoute from './app/routes/membrosPartidas.js'
+import partidasRoute from './app/routes/partidas.js'
+import robsonersRoute from './app/routes/robsoners.js'
+import seasonalsRoute from './app/routes/seasonals.js'
+import stadiumsRoute from './app/routes/stadiums.js'
+
 const PORT = process.env.PORT || 5000
-const serverPath = path.join(__dirname, '/app/views/')
+const serverPath = path.join('./app/views/')
 
 const allowCrossDomain = function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
@@ -28,17 +40,14 @@ app.get('/', function (req, res) {
 // app.use(express.static(path.join(__dirname, 'public')))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-// app.set('views', path.join(__dirname, 'views'))
-// app.set('view engine', 'ejs')
-// app.get('/', (req, res) => res.render('pages/index'))
-require('./app/routes/clubes')(app)
-require('./app/routes/clubesPartidas')(app)
-require('./app/routes/membros')(app)
-require('./app/routes/membrosPartidas')(app)
-require('./app/routes/partidas')(app)
-require('./app/routes/robsoners')(app)
-require('./app/routes/seasonals')(app)
-require('./app/routes/stadiums')(app)
+app.use(ClubesRoute)
+app.use(ClubesPartidasRoute)
+app.use(membrosRoute)
+app.use(membrosPartidasRoute)
+app.use(partidasRoute)
+app.use(robsonersRoute)
+app.use(seasonalsRoute)
+app.use(stadiumsRoute)
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`))
 
