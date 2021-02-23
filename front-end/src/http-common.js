@@ -4,7 +4,7 @@ import axios from 'axios'
 // baseURL: /api for build
 
 export default axios.create({
-  baseURL: '/api',
+  baseURL: 'https://clubedorobson.herokuapp.com/api',
   headers: {
     'Content-type': 'application/json'
   }
