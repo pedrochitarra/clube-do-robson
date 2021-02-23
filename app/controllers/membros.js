@@ -1,7 +1,6 @@
-// import Sequelize from 'sequelize'
-// const Op = Sequelize.Op
-import logger from 'logger'
-import { Membros } from '../models'
+
+const logger = require('../../common/logger')
+const { Membros } = require('../models')
 
 exports.findAll = async (req, res) => {
   try {
