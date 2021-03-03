@@ -1,7 +1,7 @@
-import axios from 'axios'
-import logger from './common/logger'
-import { Clubes, Membros, Partidas, ClubesPartidas, MembrosPartidas, Seasonals } from './app/models'
-import getColors from 'get-image-colors'
+const axios = require('axios')
+const logger = require('./common/logger')
+const { Clubes, Membros, Partidas, ClubesPartidas, MembrosPartidas, Seasonals } = require('./app/models')
+const getColors = require('get-image-colors')
 const cron = require('node-cron')
 
 async function updateClub (clubId) {
@@ -386,14 +386,14 @@ function rgbToHex (r, g, b) {
   return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
 }
 
-cron.schedule('*/25 * * * *', async () => {
+cron.schedule('*/10 * * * *', async () => {
   logger.info('RUNNING CRON')
   await updateMatches()
 })
 
-let reqTimer = setTimeout(function wakeUp () {
+/* let reqTimer = setTimeout(function wakeUp () {
   axios.get('https://clubedorobson.herokuapp.com/', function () {
     console.log('WAKE UP DYNO')
   })
   return reqTimer = setTimeout(wakeUp, 1200000)
-}, 1200000)
+}, 1200000) */
