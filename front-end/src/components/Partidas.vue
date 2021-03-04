@@ -126,25 +126,28 @@ export default {
         })
     },
 
-    getSeasons (clubId) {
+    async getSeasons (clubId) {
       console.log(clubId)
-      clubesPartidasService.getSeasons(clubId).then((response) => {
-        response.data.forEach((season) => {
-          if (season.seasonid != null) {
-            this.seasons.push(season.seasonid)
-          }
-        })
-        this.seasons = [...new Set(this.seasons)]
-        this.seasons = this.seasons.sort()
-        this.seasons.forEach(season => {
-          console.log(season)
-          this.opcoes.push({
-            label: 'Temporada ' + season,
-            value: season
-          })
-        })
-        console.log(this.opcoes)
+      const response = await clubesPartidasService.getSeasons(clubId)
+      console.log(response)
+      response.data.forEach((season) => {
+        if (season.seasonid != null) {
+          this.seasons.push(season.seasonid)
+        }
       })
+      this.seasons = [...new Set(this.seasons)]
+      this.seasons = this.seasons.sort((a, b) => {
+        return b - a
+      })
+      console.log(this.seasons)
+      this.seasons.forEach(season => {
+        console.log(season)
+        this.opcoes.push({
+          label: 'Temporada ' + season,
+          value: season
+        })
+      })
+      console.log(this.opcoes)
     },
 
     setActivePartida (partida, index) {
@@ -153,10 +156,11 @@ export default {
     }
 
   },
-  mounted () {
+
+  async mounted () {
     this.message = ''
     console.log(this.$route.params)
-    this.getSeasons(this.$route.params.clubId)
+    await this.getSeasons(this.$route.params.clubId)
     // this.getPartidas(null, this.$route.params.clubId);
   }
 }

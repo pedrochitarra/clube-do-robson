@@ -1,4 +1,4 @@
-const http = require('../http-common')
+import http from '../http-common'
 
 class ClubesPartidasService {
   getAll (clubId) {
