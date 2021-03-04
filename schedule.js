@@ -386,7 +386,7 @@ function rgbToHex (r, g, b) {
   return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
 }
 
-cron.schedule('*/10 * * * *', async () => {
+cron.schedule('*/1 * * * *', async () => {
   logger.info('RUNNING CRON')
   await updateMatches()
 })
