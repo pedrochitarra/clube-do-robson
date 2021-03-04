@@ -1,9 +1,11 @@
+require('dotenv').config()
+
 module.exports = {
   // url : 'REDACTED_POSTGRES_URL',
-  database: 'dbsomkqc5dbqov',
-  username: 'uhbrrgdkjrkcyc',
-  $1: "REDACTED",
-  host: 'ec2-3-222-127-167.compute-1.amazonaws.com',
+  database: process.env.database,
+  username: process.env.username,
+  password: process.env.password,
+  host: process.env.host,
   port: 5432,
   logging: false,
   dialect: 'postgres',
