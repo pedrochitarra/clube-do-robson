@@ -38,6 +38,7 @@ exports.getBySeason = async (req, res) => {
   try {
     const clubId = req.params.clubId
     const seasonId = req.params.seasonId
+
     const seasonMatches = await ClubesPartidas.findAll({
       where: {
         clubId: clubId,
