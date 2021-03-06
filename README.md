@@ -1,39 +1,33 @@
-# node-js-getting-started
+# Clube do Robson
 
-A barebones Node.js app using [Express 4](http://expressjs.com/).
+Aplicativo contendo informações de partidas do modo Pro Clubs do FIFA21 relacionados ao Clube do Robson. Todas as informações são extraídas diretamente do servidor do jogo utilizando a API que fornece as informações sobre todos os clubes e partidas respectivas. Banco de dados para salvar o histórico total, pois no servidor do jogo ficam salvas apenas as últimas 5 partidas. 
 
-This application supports the [Getting Started on Heroku with Node.js](https://devcenter.heroku.com/articles/getting-started-with-nodejs) article - check it out.
+Disponível em: https://clubedorobson.herokuapp.com/#/clubes/6703918
 
-## Running Locally
+Back-end utilizando Node, front-end utilizando Vuejs, banco de dados Postgres e deploy na plataforma Heroku.
 
-Make sure you have [Node.js](http://nodejs.org/) and the [Heroku CLI](https://cli.heroku.com/) installed.
+## Página principal do Clube
+![clube](https://user-images.githubusercontent.com/31597278/110194553-85daf900-7e17-11eb-801a-8705d5ff27f3.JPG)
 
-```sh
-$ git clone https://github.com/heroku/node-js-getting-started.git # or clone your own fork
-$ cd node-js-getting-started
-$ npm install
-$ npm start
-```
+Nessa página estão presentes as informações gerais do clube, como número total de jogos e temporadas.
 
-Your app should now be running on [localhost:5000](http://localhost:5000/).
+## Página de jogadores
+![jogadores](https://user-images.githubusercontent.com/31597278/110194625-db170a80-7e17-11eb-8ddb-24b9c298c929.JPG)
 
-## Deploying to Heroku
+Nessa página está presente a lista dos jogadores do time numa tabela, com informações resumidas e a possibilidade de ir para os detalhes de cada um.
 
-```
-$ heroku create
-$ git push heroku main
-$ heroku open
-```
-or
+### Página de detalhes de cada jogador
+![jogador](https://user-images.githubusercontent.com/31597278/110194649-0994e580-7e18-11eb-90f5-46e5b77ad7ce.JPG)
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+Nessa página estão presentes os dados de habilidades de cada jogador e seu gráfico, bem como as estatísticas do jogador dentro do clube, como jogos e gols marcados.
 
-## Documentation
+## Página de partidas
+![partidas](https://user-images.githubusercontent.com/31597278/110194672-377a2a00-7e18-11eb-9e1e-0e248d667653.JPG)
 
-For more information about using Node.js on Heroku, see these Dev Center articles:
+Nessa página está presente a tabela completa de partidas dividida por temporadas do clube, com informações resumidas do resultado de cada uma.
 
-- [Getting Started on Heroku with Node.js](https://devcenter.heroku.com/articles/getting-started-with-nodejs)
-- [Heroku Node.js Support](https://devcenter.heroku.com/articles/nodejs-support)
-- [Node.js on Heroku](https://devcenter.heroku.com/categories/nodejs)
-- [Best Practices for Node.js Development](https://devcenter.heroku.com/articles/node-best-practices)
-- [Using WebSockets on Heroku with Node.js](https://devcenter.heroku.com/articles/node-websockets)
+### Página da partida
+![partida-1](https://user-images.githubusercontent.com/31597278/110194685-5f698d80-7e18-11eb-961f-a8cb295d4c77.JPG)
+![partida-2](https://user-images.githubusercontent.com/31597278/110194690-61cbe780-7e18-11eb-8925-ce13bb735b9e.JPG)
+
+Nessa página estão presentes as informações detalhadas da partida, como horário da partida e estatísticas de cada time.
