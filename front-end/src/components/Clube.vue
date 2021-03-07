@@ -245,7 +245,7 @@ img {
 
 .x-large-purple-clube {
   /*position: absolute;*/
-  width: 95%;
+  width: 100%;
   /* height: 63vh; */
   padding: 5px;
   background: #9c83cc;
