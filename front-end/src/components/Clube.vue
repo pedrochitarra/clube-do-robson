@@ -61,15 +61,22 @@
         </div>
 
         <div class='line-2-clubs'>
-          <div class='large-purple'>
+          <div class='x-large-purple-clube'>
             <line-chart
               class='seasonal-chart'
               v-if='seasonalData != null'
               :chartData='chartData'
               :options='chartOptions'
             />
+            <div class='seasonal-chart'>
+              <b-img
+              fluid
+              id="url"/>
+            </div>
           </div>
-          <div class='large-purple'>
+        </div>
+        <div class='line-2-clubs'>
+          <div class='x-large-purple-clube'>
             <p style='text-align: center'>
               <strong>Títulos</strong>
             </p>
@@ -238,17 +245,35 @@ body {
   align-items: center;
   justify-content: center;
   display: flex;
-  /* margin: 0 auto; */
+  margin: 0 auto;
 }
 
-.chartjs-size-monitor {
-  width: 400px;
-  height: 400px
+img {
+  margin: 0 auto
 }
 
 #pie-chart {
   width: 20vh;
   height: 20vh;
+}
+
+.x-large-purple-clube {
+  /*position: absolute;*/
+  width: 100%;
+  /* height: 63vh; */
+  padding: 5px;
+  background: #9c83cc;
+  border-radius: 20px;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  flex-direction:column;
+  margin: 10px;
+  max-height: 650px
+}
+
+.img-fluid.mx-auto.d-block{
+  max-height: 250px !important
 }
 
 /* MOBILE */
