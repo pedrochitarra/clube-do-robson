@@ -1,3 +1,4 @@
+
 const axios = require('axios')
 const logger = require('./common/logger')
 const { Clubes, Membros, Partidas, ClubesPartidas, MembrosPartidas, Seasonals } = require('./app/models')
@@ -386,7 +387,7 @@ function rgbToHex (r, g, b) {
   return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
 }
 
-cron.schedule('*/1 * * * *', async () => {
+cron.schedule('*/10 * * * *', async () => {
   logger.info('RUNNING CRON')
   await updateMatches()
 })

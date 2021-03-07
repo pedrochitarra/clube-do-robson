@@ -1,11 +1,11 @@
-require('dotenv').config()
 
+const env = require('../.env.json')
 module.exports = {
   // url : 'REDACTED_POSTGRES_URL',
-  database: process.env.database,
-  username: process.env.username,
-  password: process.env.password,
-  host: process.env.host,
+  database: env.database,
+  username: env.username,
+  password: env.password,
+  host: env.host,
   port: 5432,
   logging: false,
   dialect: 'postgres',
