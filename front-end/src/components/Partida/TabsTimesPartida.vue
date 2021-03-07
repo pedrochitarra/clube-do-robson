@@ -1,63 +1,66 @@
 <template>
     <div>
-        <b-tabs fill>
-          <b-tab v-if="tabelaPartida.length > 0" v-bind:title="tabelaPartida[0].partidasHomeClub.name" active>
-            <b-table elevation-1 align="center" class="btable" bordered outlined small text-center striped hover :items="membrosHome" :fields="fieldsCompact">
-                <template #cell(name)="data">
-                    <b-btn variant="purple" @click="showModalMember(data)">
-                        <b-icon icon="file-bar-graph"/>
-                    </b-btn>
-                </template>
-                <template #cell(mom)="data">
-                    <b-icon icon="star-fill" v-if="data.value=='1'"/>
-                </template>
-            </b-table>
-            <b-btn v-if="clubeDoRobson == 'HOME'" variant="purple" class="button-right" id="show-btn" @click="showModal">Escalação</b-btn>
-          </b-tab>
-          <b-tab v-if="tabelaPartida.length > 0" v-bind:title="tabelaPartida[0].partidasAwayClub.name">
-            <b-table align="center" class="btable" bordered outlined small text-center striped hover :items="membrosAway" :fields="fieldsCompact">
-                <template #cell(name)="data">
-                    <b-btn variant="purple" @click="showModalMember(data)">
-                        <b-icon icon="file-bar-graph"/>
-                    </b-btn>
-                </template>
-                <template #cell(mom)="data">
-                    <b-icon icon="star-fill" v-if="data.value=='1'"/>
-                </template>
-            </b-table>
-            <b-btn v-if="clubeDoRobson == 'AWAY'" variant="purple" class="button-right" id="show-btn" @click="showModal">Escalação</b-btn>
-          </b-tab>
-        </b-tabs>
+      <div class='line-1-partida'>
+        <div class='xlarge-purple-partida'>
+          <b-tabs fill>
+            <b-tab v-if="tabelaPartida.length > 0" v-bind:title="tabelaPartida[0].partidasHomeClub.name" active>
+              <b-table class="btable table-partida" bordered outlined small text-center striped hover :items="membrosHome" :fields="fieldsCompact">
+                  <template #cell(name)="data">
+                      <b-btn variant="purple" @click="showModalMember(data)">
+                          <b-icon icon="file-bar-graph"/>
+                      </b-btn>
+                  </template>
+                  <template #cell(mom)="data">
+                      <b-icon icon="star-fill" v-if="data.value=='1'"/>
+                  </template>
+              </b-table>
+              <b-btn v-if="clubeDoRobson == 'HOME'" variant="purple" class="button-right" id="show-btn" @click="showModal">Escalação</b-btn>
+            </b-tab>
+            <b-tab v-if="tabelaPartida.length > 0" v-bind:title="tabelaPartida[0].partidasAwayClub.name">
+              <b-table align="center" class="btable table-partida" bordered outlined small text-center striped hover :items="membrosAway" :fields="fieldsCompact">
+                  <template #cell(name)="data">
+                      <b-btn variant="purple" @click="showModalMember(data)">
+                          <b-icon icon="file-bar-graph"/>
+                      </b-btn>
+                  </template>
+                  <template #cell(mom)="data">
+                      <b-icon icon="star-fill" v-if="data.value=='1'"/>
+                  </template>
+              </b-table>
+              <b-btn v-if="clubeDoRobson == 'AWAY'" variant="purple" class="button-right" id="show-btn" @click="showModal">Escalação</b-btn>
+            </b-tab>
+          </b-tabs>
 
-        <b-modal centered id="modal-tall" size="xl" ref="my-modal" ok-only>
-                <b-img
-                v-if="squadImage"
-                fluid
-                center
-                :src="require(`@/assets/squads/${squadImage}`)"/>
-        </b-modal>
+          <b-modal centered id="modal-tall" size="xl" ref="my-modal" ok-only>
+                  <b-img
+                  v-if="squadImage"
+                  fluid
+                  center
+                  :src="require(`@/assets/squads/${squadImage}`)"/>
+          </b-modal>
 
-        <b-modal centered id="my-modal" size="xl" ref="my-modal-1" ok-only>
-            <!--Hello {{selectedMember.item}}-->
-            <b-card>
-            <strong>{{selectedMember.item.membrosPartidasMembros.proName}}</strong>
-            <p></p>
-            Gols {{selectedMember.item.goals}}
-            <br>
-            Assistências {{selectedMember.item.assists}}
-            <br>
-            Tentativas de passe {{selectedMember.item.passattempts}}
-            <br>
-            Passes feitos {{selectedMember.item.passesmade}}
-            <br>
-            Nota{{selectedMember.item.rating}}
-            <br>
-            Divididas tentadas{{selectedMember.item.tackleattempts}}
-            <br>
-            Divididas com sucesso{{selectedMember.item.tacklesmade}}
-            </b-card>
-        </b-modal>
-
+          <b-modal centered id="my-modal" size="xl" ref="my-modal-1" ok-only>
+              <!--Hello {{selectedMember.item}}-->
+            <div class='xlarge-purple-partida-modal'>
+              <strong>{{selectedMember.item.membrosPartidasMembros.proName}}</strong>
+              <p></p>
+              Gols {{selectedMember.item.goals}}
+              <br>
+              Assistências {{selectedMember.item.assists}}
+              <br>
+              Tentativas de passe {{selectedMember.item.passattempts}}
+              <br>
+              Passes feitos {{selectedMember.item.passesmade}}
+              <br>
+              Nota {{selectedMember.item.rating}}
+              <br>
+              Divididas tentadas {{selectedMember.item.tackleattempts}}
+              <br>
+              Divididas com sucesso {{selectedMember.item.tacklesmade}}
+            </div>
+          </b-modal>
+        </div>
+      </div>
     </div>
 </template>
 
@@ -248,3 +251,69 @@ export default {
   }
 }
 </script>
+
+<style>
+
+.nav-link {
+  color: #333333 !important
+}
+
+.nav-link.active {
+  background-color: #AA9CC2 !important
+}
+
+.xlarge-purple-partida-modal {
+
+  /*position: absolute;*/
+  width: 90%;
+  /* height: 63vh; */
+  padding: 5px;
+  background: #9c83cc;
+  border-radius: 20px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction:column;
+  margin: 5px auto !important;
+  text-align: center
+
+}
+
+.modal-body {
+  margin: 0 !important
+}
+
+.btn-primary {
+  background-color: #9c83cc;
+  border-color: #9c83cd
+}
+
+@media only screen and (max-device-width: 1080px) {
+
+.table-partida {
+
+ font-size: 12px
+
+}
+
+.xlarge-purple-partida-modal {
+
+  /*position: absolute;*/
+  width: 90%;
+  /* height: 63vh; */
+  padding: 5px;
+  background: #9c83cc;
+  border-radius: 20px;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  text-justify: inter-character;
+  display: flex;
+  flex-direction:column;
+  margin: 5px auto !important;
+
+}
+
+}
+
+</style>
