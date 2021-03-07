@@ -57,4 +57,13 @@ export default {
 .centerNav{
   margin: 0 auto !important
 }
+
+v-app-bar {
+  width: 90vw
+}
+
+body {
+  background: #d1d1d1;
+}
+
 </style>
