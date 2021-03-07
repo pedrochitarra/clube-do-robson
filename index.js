@@ -10,7 +10,7 @@ const path = require('path')
 // app.set('view engine', 'ejs')
 // app.get('/', (req, res) => res.render('pages/index'))
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5500
 const serverPath = path.join('app', 'views')
 
 const allowCrossDomain = function (req, res, next) {

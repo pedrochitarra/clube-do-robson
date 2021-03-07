@@ -1,39 +1,42 @@
 <template>
-  <div>
+  <div class='background'>
+      <div class='background-clubs'>
 
-    <b-table
-      fixed
-      v-if="listMembros"
-      :items="listMembros"
-      :fields="headers"
-      id="my-table"
-      :per-page="perPage"
-      :current-page="currentPage">
-      <template #cell(face)="data">
-        <b-img center rounded="circle" height="100%" width="100%" :src="data.value" alt="..." />
-      </template>
+        <div class='xlarge-purple'>
+          <b-table
 
-      <template #cell(name)="data">
-        <b-btn
-          variant="purple"
-          :to="{
-            name: 'membro',
-            params: { id: data.value },
-          }"
-          >Detalhes</b-btn
-        >
-      </template>
-    </b-table>
+            v-if="listMembros"
+            :items="listMembros"
+            :fields="headers"
+            id="my-table"
+            :per-page="perPage"
+            :current-page="currentPage">
+            <template #cell(face)="data">
+              <b-img center rounded="circle" height="100%" width="100%" :src="data.value" alt="..." />
+            </template>
 
-    <b-pagination
-      class="paginationPurple"
-      align="center"
-      v-model="currentPage"
-      :total-rows="rows"
-      :per-page="perPage"
-      aria-controls="my-table"
-    ></b-pagination>
+            <template #cell(name)="data">
+              <b-btn
+                variant="purple"
+                :to="{
+                  name: 'membro',
+                  params: { id: data.value },
+                }"
+                >Detalhes</b-btn
+              >
+            </template>
+          </b-table>
 
+          <b-pagination
+            class="paginationPurple"
+            align="center"
+            v-model="currentPage"
+            :total-rows="rows"
+            :per-page="perPage"
+            aria-controls="my-table"
+          ></b-pagination>
+        </div>
+    </div>
   </div>
 </template>
 
@@ -101,7 +104,7 @@ export default {
                 (robsoner) => robsoner.name === membro.name
               )
               if (face === undefined) {
-                this.membros[i].face = 'https://banner2.cleanpng.com/20180603/jx/kisspng-user-interface-design-computer-icons-default-stephen-salazar-photography-5b1462e1b19d70.1261504615280626897275.jpg'
+                this.membros[i].face = require('@/assets/defaultMember.png')
               } else {
                 this.membros[i].number = face.number
                 this.membros[i].face = face.face
@@ -157,6 +160,20 @@ export default {
 </script>
 
 <style>
+
+body {
+  background: #d1d1d1;
+  /*font-family: 'Muli', sans-serif;*/
+
+  margin: 0;
+  /*flex-direction: column;*/
+  align-items: center;
+  justify-content: center;
+  height: 90vh;
+
+  color: #333333;
+}
+
 .list {
   text-align: left;
   max-width: 750px;
@@ -166,6 +183,90 @@ export default {
 td {
   text-align: center !important;
   vertical-align: middle !important
+}
+
+.background {
+  background: #d1d1d1;
+}
+
+.background-clubs {
+  /*position: relative;*/
+  width: 90vw;
+  /* height: 90vh; */
+  background: #d1d1d1;
+  /*display: flex;*/
+    align-items: center;
+  justify-content: center;
+  /*position: relative;*/
+  margin: 10px;
+}
+
+.table-members {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin: 0 auto;
+  background: #9c83cc;
+}
+
+.xlarge-purple {
+  /*position: absolute;*/
+  width: 50%;
+  /* height: 63vh; */
+  padding: 5px;
+  background: #9c83cc;
+  border-radius: 20px;
+  align-items: center;
+  justify-content: center;
+  /*display: flex;*/
+  margin: 0 auto;
+}
+
+a.btn.btn-purple {
+  color: #6F42C1;
+}
+
+/* MOBILE */
+@media only screen and (max-device-width: 768px) {
+  .small-purple {
+    /*position: absolute;*/
+    width: 28%;
+    /* height: 23vh; */
+    background-color: #9c83cc;
+    border-radius: 20px;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    /*display: flex;*/
+    margin: 10px;
+    font-size: 12px;
+    /*font-size: 1vw;*/
+  }
+
+  .xlarge-purple {
+    /*position: absolute;*/
+    width: 100%;
+    /* height: 63vh; */
+    padding: 5px;
+    background: #9c83cc;
+    border-radius: 20px;
+    align-items: center;
+    justify-content: center;
+    /*display: flex;*/
+    font-size: 12px;
+    margin: 10px;
+  }
+
+  .btn {
+    font-size: 12px
+  }
+
+  #pie-chart {
+    width: 30vh;
+    height: 30vh;
+  }
+
 }
 
 </style>
