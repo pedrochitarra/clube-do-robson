@@ -13,7 +13,7 @@ Disponível em: https://clubedorobson.herokuapp.com/#/clubes/6703918
 ## Página principal do Clube
 ![clube](https://user-images.githubusercontent.com/31597278/110194553-85daf900-7e17-11eb-801a-8705d5ff27f3.JPG)
 
-Nessa página estão presentes as informações gerais do clube, como número total de jogos e temporadas.
+Nessa página estão presentes as informações gerais do clube, como número total de jogos e temporadas
 
 ## Página de jogadores
 ![jogadores](https://user-images.githubusercontent.com/31597278/110194625-db170a80-7e17-11eb-8ddb-24b9c298c929.JPG)
