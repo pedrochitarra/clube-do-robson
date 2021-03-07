@@ -1,17 +1,6 @@
 <script>
 import { Pie } from 'vue-chartjs'
 
-function done () {
-  const myLine = document.getElementById('pie-chart').getContext('2d')
-  console.log(myLine)
-  const url = myLine.canvas.toDataURL()
-  const canvasDiv = document.getElementById('pie-chart')
-
-  document.getElementById('url').src = url
-  canvasDiv.style.display = 'none'
-  console.log(url)
-}
-
 export default {
   extends: Pie,
   props: {
@@ -28,10 +17,7 @@ export default {
     console.log(this.chartData)
     console.log(this.options)
     this.renderChart(this.chartData, {
-      bezierCurve: false,
-      animation: {
-        onComplete: done
-      }
+
     })
   }
 }

@@ -141,11 +141,7 @@
                 :chartData="chartData"
                 :options="chartOptions"
               />
-              <div class='hexagon'>
-                <b-img
-                fluid
-                id="url"/>
-            </div>
+
               <b-btn  variant="purple" class="button-right" id="show-btn" @click="showModal">Detalhes</b-btn>
           </div>
         </div>
@@ -412,13 +408,13 @@ export default {
     console.log(this.$route.params)
     await this.getRobsoner(this.$route.params.id)
     await this.getMembro(this.$route.params.id, this.$route.params.clubId)
-    const myLine = document.getElementById('radar-chart').getContext('2d')
+    /* const myLine = document.getElementById('radar-chart').getContext('2d')
     console.log(myLine)
     const url = myLine.canvas.toDataURL()
     const canvasDiv = document.getElementById('radar-chart')
     document.getElementById('url').src = url
     canvasDiv.style.display = 'none'
-    console.log(url)
+    console.log(url) */
   }
 }
 
@@ -537,7 +533,7 @@ div.col{
 
 .x-large-purple-member {
   /*position: absolute;*/
-  width: 100%;
+  width: 95%;
   /* height: 63vh; */
   padding: 5px;
   background: #9c83cc;
@@ -548,31 +544,6 @@ div.col{
   flex-direction:column;
   margin: 10px;
   max-height: 650px
-}
-
-.chartjs-size-monitor,
-.hexagon,
-.chartjs-render-monitor {
-  /*width:38vh !important;*/
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  /* margin: 0 auto; */
-}
-
-.hexagon{
-  max-width: 600px;
-  margin: 0 auto
-}
-
-.chartjs-size-monitor {
-  width: 200;
-  height: 200
-}
-
-#radar-chart {
-  width: 20vh;
-  height: 20vh;
 }
 
 .row {
@@ -624,14 +595,9 @@ div.col{
 
 }
 
-.chartjs-size-monitor,
-.seasonal-chart,
-.chartjs-render-monitor {
-  /*width:38vh !important;*/
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  /* margin: 0 auto; */
+#canvas {
+  width: 90%;
+  margin: 10px
 }
 
 img {
@@ -673,11 +639,6 @@ img {
 
   .row {
     justify-content: space-between
-  }
-
-  .chartjs-size-monitor {
-    width: 200;
-    height: 200
   }
 
 }

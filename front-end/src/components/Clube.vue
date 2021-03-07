@@ -238,28 +238,13 @@ body {
   margin: 10px;
 }
 
-.chartjs-size-monitor,
-.seasonal-chart,
-.chartjs-render-monitor {
-  /*width:38vh !important;*/
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  margin: 0 auto;
-}
-
 img {
   margin: 0 auto
 }
 
-#pie-chart {
-  width: 20vh;
-  height: 20vh;
-}
-
 .x-large-purple-clube {
   /*position: absolute;*/
-  width: 100%;
+  width: 95%;
   /* height: 63vh; */
   padding: 5px;
   background: #9c83cc;
@@ -272,8 +257,9 @@ img {
   max-height: 650px
 }
 
-.img-fluid.mx-auto.d-block{
-  max-height: 250px !important
+#canvas {
+  width: 90%;
+  margin: 0 auto
 }
 
 /* MOBILE */
@@ -305,11 +291,6 @@ img {
     justify-content: center;
     /*display: flex;*/
     margin: 10px;
-  }
-
-  #pie-chart {
-    width: 30vh;
-    height: 30vh;
   }
 
 }
