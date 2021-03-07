@@ -60,6 +60,7 @@
           </div>
         </div>
 
+        <!-- ARRUMAR CANVAS
         <div class='line-2-clubs'>
           <div class='x-large-purple-clube'>
             <line-chart
@@ -74,7 +75,7 @@
               id="url"/>
             </div>
           </div>
-        </div>
+        </div>-->
         <div class='line-2-clubs'>
           <div class='x-large-purple-clube'>
             <p style='text-align: center'>
@@ -93,13 +94,13 @@
 <script>
 import clubesService from '../services/clubesService'
 import seasonalService from '../services/seasonalService'
-import LineChart from '../components/Pizza.vue'
+// import LineChart from '../components/Pizza.vue'
 import Slider from '../components/Slider.vue'
 
 export default {
   name: 'clube',
   components: {
-    LineChart, Slider
+    Slider
   },
   data () {
     return {

@@ -133,6 +133,7 @@
           </div>
         </div>
 
+        <!--ARRUMAR CANVAS
         <div class='line-2-member'>
           <div class='x-large-purple-member'>
               <line-chart
@@ -144,7 +145,7 @@
 
               <b-btn  variant="purple" class="button-right" id="show-btn" @click="showModal">Detalhes</b-btn>
           </div>
-        </div>
+        </div>-->
         <div class='line-2-member'>
           <div class='x-large-purple-member'>
             <div class='stats-row'>
@@ -185,16 +186,12 @@
 <script>
 import membrosService from '../services/membrosService'
 import robsonService from '../services/robsonService'
-import LineChart from '../components/RadarHex.vue'
-
-window.onload = function () {
-  console.log('akkkkkkkkkkkkkk')
-}
+// import LineChart from '../components/RadarHex.vue'
 
 export default {
   name: 'membro',
   components: {
-    LineChart
+
   },
   data () {
     return {
