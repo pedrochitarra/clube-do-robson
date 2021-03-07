@@ -26,10 +26,10 @@
         </div>
         <div class='line-1-partida'>
           <div class='xlarge-purple-partida'>
-              <b-table  v-if="items.length > 0" :items="items" :fields="fields">
+              <b-table v-if="items.length > 0" :items="items" :fields="fields">
                 <template #cell(homeCrest)="data">
                   <b-img
-                    fluid
+
                     center
                     v-bind:src="
                       'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l' +
@@ -44,7 +44,7 @@
                 </template>
                 <template #cell(awayCrest)="data">
                   <b-img
-                    fluid
+
                     center
                     v-bind:src="
                       'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l' +
@@ -194,6 +194,10 @@ export default {
 
 img {
   border-radius: 20px
+}
+
+.mx-auto.d-block{
+  width: 100%
 }
 
 @media only screen and (max-device-width: 768px) {
