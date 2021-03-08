@@ -26,7 +26,7 @@ Nessa página está presente a lista dos jogadores do time numa tabela, com info
 Nessa página estão presentes os dados de habilidades de cada jogador e seu gráfico, bem como as estatísticas do jogador dentro do clube, como jogos e gols marcados.
 
 ## Página de partidas
-![partidas](https://user-images.githubusercontent.com/31597278/110321424-6945e900-7ff0-11eb-9565-c7ca3c27f1c8.JPG)
+![partidas](https://user-images.githubusercontent.com/31597278/110321658-c17ceb00-7ff0-11eb-9123-8e1804a603bd.JPG)
 
 Nessa página está presente a tabela completa de partidas dividida por temporadas do clube, com informações resumidas do resultado de cada uma.
 
