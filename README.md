@@ -16,7 +16,7 @@ Disponível em: https://clubedorobson.herokuapp.com/#/clubes/6703918
 Nessa página estão presentes as informações gerais do clube, como número total de jogos e temporadas
 
 ## Página de jogadores
-![membros](https://user-images.githubusercontent.com/31597278/110321393-5f23ea80-7ff0-11eb-8295-d2a18fffe836.JPG)
+![membros](https://user-images.githubusercontent.com/31597278/110321905-14ef3900-7ff1-11eb-9808-e51b942b46df.JPG)
 
 Nessa página está presente a lista dos jogadores do time numa tabela, com informações resumidas e a possibilidade de ir para os detalhes de cada um.
 
