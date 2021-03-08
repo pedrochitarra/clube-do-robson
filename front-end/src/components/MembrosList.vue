@@ -198,7 +198,7 @@ td {
     align-items: center;
   justify-content: center;
   /*position: relative;*/
-  margin: 10px;
+  margin: 10px auto;
 }
 
 .table-members {
