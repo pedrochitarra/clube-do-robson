@@ -11,27 +11,27 @@ O front-end foi criado utilizando Vuejs, pela facilidade de criação de compone
 Disponível em: https://clubedorobson.herokuapp.com/#/clubes/6703918
 
 ## Página principal do Clube
-![clube](https://user-images.githubusercontent.com/31597278/110194553-85daf900-7e17-11eb-801a-8705d5ff27f3.JPG)
+![clube](https://user-images.githubusercontent.com/31597278/110321372-5a5f3680-7ff0-11eb-9a03-6f2d5ab67f2c.JPG)
 
 Nessa página estão presentes as informações gerais do clube, como número total de jogos e temporadas
 
 ## Página de jogadores
-![jogadores](https://user-images.githubusercontent.com/31597278/110194625-db170a80-7e17-11eb-8ddb-24b9c298c929.JPG)
+![membros](https://user-images.githubusercontent.com/31597278/110321905-14ef3900-7ff1-11eb-9808-e51b942b46df.JPG)
 
 Nessa página está presente a lista dos jogadores do time numa tabela, com informações resumidas e a possibilidade de ir para os detalhes de cada um.
 
 ### Página de detalhes de cada jogador
-![jogador](https://user-images.githubusercontent.com/31597278/110194649-0994e580-7e18-11eb-90f5-46e5b77ad7ce.JPG)
+![membro](https://user-images.githubusercontent.com/31597278/110321405-63e89e80-7ff0-11eb-8095-d2d8b2ce8a66.JPG)
 
 Nessa página estão presentes os dados de habilidades de cada jogador e seu gráfico, bem como as estatísticas do jogador dentro do clube, como jogos e gols marcados.
 
 ## Página de partidas
-![partidas](https://user-images.githubusercontent.com/31597278/110194672-377a2a00-7e18-11eb-9e1e-0e248d667653.JPG)
+![partidas](https://user-images.githubusercontent.com/31597278/110321658-c17ceb00-7ff0-11eb-9123-8e1804a603bd.JPG)
 
 Nessa página está presente a tabela completa de partidas dividida por temporadas do clube, com informações resumidas do resultado de cada uma.
 
 ### Página da partida
-![partida-1](https://user-images.githubusercontent.com/31597278/110194685-5f698d80-7e18-11eb-961f-a8cb295d4c77.JPG)
-![partida-2](https://user-images.githubusercontent.com/31597278/110194690-61cbe780-7e18-11eb-8925-ce13bb735b9e.JPG)
+![partida](https://user-images.githubusercontent.com/31597278/110321439-6fd46080-7ff0-11eb-891a-28bb8f3730b7.JPG)
+
 
 Nessa página estão presentes as informações detalhadas da partida, como horário da partida e estatísticas de cada time.
