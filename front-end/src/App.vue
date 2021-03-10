@@ -30,7 +30,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn text to="/clubes/6703918">Clubes</v-btn>
+      <v-btn text to="/clubes/6703918">Clube</v-btn>
       <v-btn text to="/membros/6703918">Jogadores</v-btn>
       <v-btn text to="/partidas/6703918">Partidas</v-btn>
 
@@ -57,4 +57,13 @@ export default {
 .centerNav{
   margin: 0 auto !important
 }
+
+v-app-bar {
+  width: 90vw
+}
+
+body {
+  background: #d1d1d1;
+}
+
 </style>

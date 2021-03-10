@@ -1,78 +1,14 @@
 <template>
   <div>
-    <header-partida v-if="tabelaPartida.length > 0" v-bind:items="tabelaPartida" :timestamp="partida.timestamp" :stadName="stadName"></header-partida>
-    <!--<b-table  v-if="tabelaPartida.length > 0" :items="tabelaPartida" :fields="fieldsTimes">
-      <template #cell(homeCrest)="data">
-        <b-img
-          fluid
-          center
-          height="100%"
-          width="100%"
-          v-bind:src="
-            'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l' +
-            data.value +
-            '.png'
-          "
-          alt="..."
-        />
-      </template>
-      <template #cell(partidasHomeClub.name) = "data">
-        <span class="spanCenter">{{data.item.partidasHomeClub.name}}</span> <br> <span class="spanCenter">{{data.item.homeGoals}} x {{data.item.awayGoals}}</span> <br> <span class="spanCenter">{{data.item.partidasAwayClub.name}}</span>
-      </template>
-      <template #cell(awayCrest)="data">
-        <b-img
-          fluid
-          center
-          height="100%"
-          width="100%"
-          v-bind:src="
-            'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l' +
-            data.value +
-            '.png'
-          "
-          alt="..."
-        />
-      </template>
-      <template #cell(homeGoals)="data">
-        {{data.value}} <span>x</span> {{data.item.awayGoals}}
-      </template>
-    </b-table>-->
+    <div class='background'>
+      <div class='background-partida'>
+        <header-partida v-if="tabelaPartida.length > 0" v-bind:items="tabelaPartida" :timestamp="partida.timestamp" :stadName="stadName"></header-partida>
 
-    <b-card>
-    <!--<b-table
-      align="center"
-      :items="arrayPartida"
-      :fields="fields"
-    ></b-table>-->
-    <stats-partida :items="arrayPartida"></stats-partida>
-    </b-card>
+        <stats-partida :items="arrayPartida"></stats-partida>
 
-    <b-card>
-      <div>
-        <!--<b-tabs fill>
-          <b-tab v-if="tabelaPartida.length > 0" v-bind:title="tabelaPartida[0].partidasHomeClub.name" active>
-            <b-table elevation-1 align="center" class="btable" bordered outlined small text-center striped hover :items="membrosHome" :fields="fieldsMembros">
-            </b-table>
-            <b-btn v-if="clubeDoRobson == 'HOME'" variant="purple" class="button-right" id="show-btn" @click="showModal">Escalação</b-btn>
-          </b-tab>
-          <b-tab v-if="tabelaPartida.length > 0" v-bind:title="tabelaPartida[0].partidasAwayClub.name">
-            <b-table align="center" class="btable" bordered outlined small text-center striped hover :items="membrosAway" :fields="fieldsMembros">
-            </b-table>
-            <b-btn v-if="clubeDoRobson == 'AWAY'" variant="purple" class="button-right" id="show-btn" @click="showModal">Escalação</b-btn>
-          </b-tab>
-        </b-tabs>-->
         <tabs-times-partida :membrosAway="membrosAway" :membrosHome="membrosHome" :clubeDoRobson="clubeDoRobson" :tabelaPartida="tabelaPartida" :squadImage="squadImage"></tabs-times-partida>
       </div>
-    </b-card>
-
-    <!--<b-modal centered id="modal-tall" size="xl" ref="my-modal" ok-only>
-        <b-img
-          v-if="squadImage"
-          fluid
-          center
-          :src="require(`@/assets/squads/${squadImage}`)"/>
-    </b-modal>-->
-
+    </div>
   </div>
 </template>
 

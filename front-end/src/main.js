@@ -7,6 +7,7 @@ import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 // Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap'
 import vuetify from './plugins/vuetify'
+import SlitherSlider from 'slither-slider'
 
 Vue.config.productionTip = false
 new Vue({
@@ -23,3 +24,4 @@ Vue.use(BootstrapVueIcons)
 Vue.config.productionTip = false
 
 Vue.use(vuetify)
+Vue.use(SlitherSlider)

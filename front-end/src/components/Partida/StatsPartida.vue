@@ -1,5 +1,9 @@
 <template>
-  <b-table align="center" :items="items" :fields="fields"></b-table>
+
+  <div class='xlarge-purple-partida'>
+    <b-table align="center" :items="items" :fields="fields"></b-table>
+  </div>
+
 </template>
 
 <script>
@@ -37,3 +41,11 @@ export default {
   }
 }
 </script>
+
+<style>
+
+#__BVID__257 thead {
+  display: none;
+}
+
+</style>
