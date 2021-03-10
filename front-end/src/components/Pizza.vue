@@ -16,7 +16,9 @@ export default {
   mounted () {
     console.log(this.chartData)
     console.log(this.options)
-    this.renderChart(this.chartData, this.options)
+    this.renderChart(this.chartData, {
+
+    })
   }
 }
 </script>

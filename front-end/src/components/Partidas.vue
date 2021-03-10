@@ -1,33 +1,39 @@
 <template>
   <div>
-    <br>
-    <v-select
-      class="select"
-      placeholder = "Escolha a temporada"
-      v-model= "selectedSeason"
-      :items="opcoes"
-      item-text="label"
-      item-value="value"
-      v-on:input="getPartidas"
-      ></v-select>
+    <div class='background'>
+      <div class='background-partidas'>
+        <div class='xlarge-purple-partidas'>
+          <br>
+          <v-select
+            class="select"
+            placeholder = "Escolha a temporada"
+            v-model= "selectedSeason"
+            :items="opcoes"
+            item-text="label"
+            item-value="value"
+            v-on:input="getPartidas"
+            ></v-select>
 
-    <b-table fixed responsive :items="partidas" :fields="fields">
-      <template #cell(homeCrest)="data">
-        <b-img fluid center :src="'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l'+ data.value +'.png'" alt="..." />
-      </template>
-      <template #cell(awayCrest)="data">
-        <b-img fluid center :src="'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l'+ data.value +'.png'" alt="..." />
-      </template>
-      <template #cell(matchId)="data">
-        <b-btn
-        variant="purple"
-        :to="{
-          name:'partida',
-          params: {partidaId: data.value}
-        }"
-        >Detalhes</b-btn>
-      </template>
-    </b-table>
+          <b-table :items="partidas" :fields="fields">
+            <template #cell(homeCrest)="data">
+              <b-img fluid center height="100%" width="100%" :src="'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l'+ data.value +'.png'" alt="..." />
+            </template>
+            <template #cell(awayCrest)="data">
+              <b-img fluid center height="100%" width="100%" :src="'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l'+ data.value +'.png'" alt="..." />
+            </template>
+            <template #cell(matchId)="data">
+              <b-btn
+              variant="purple"
+              :to="{
+                name:'partida',
+                params: {partidaId: data.value}
+              }"
+              >Detalhes</b-btn>
+            </template>
+          </b-table>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -168,6 +174,36 @@ export default {
 
 <style>
 
+body {
+  background: #d1d1d1;
+  /*font-family: 'Muli', sans-serif;*/
+
+  margin: 0 auto;
+  /*flex-direction: column;*/
+  align-items: center;
+  justify-content: center;
+  height: 95vh;
+  overflow: auto;
+  height: auto;
+  color: #333333;
+  display: block
+}
+
+.list {
+  text-align: left;
+  max-width: 750px;
+  margin: auto;
+}
+
+td {
+  text-align: center !important;
+  vertical-align: middle !important
+}
+
+.background {
+  background: #d1d1d1;
+}
+
 td {
   vertical-align: middle !important;
 }
@@ -180,6 +216,60 @@ td {
 .btable {
   text-align: center;
   vertical-align: middle;
+}
+
+.background-partidas {
+  /*position: relative;*/
+  width: 90vw;
+  /* height: 90vh; */
+  background: #d1d1d1;
+  /*display: flex;*/
+    align-items: center;
+  justify-content: center;
+  /*position: relative;*/
+  margin: 10px auto;
+}
+
+.xlarge-purple-partidas{
+
+  /*position: absolute;*/
+  width: 50%;
+  /* height: 63vh; */
+  padding: 5px;
+  background: #9c83cc;
+  border-radius: 20px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction:column;
+  margin: 0 auto;
+
+}
+
+.b-table {
+  width: 90%
+}
+
+@media only screen and (max-device-width: 768px) {
+
+  .xlarge-purple-partidas {
+    /*position: absolute;*/
+    width: 100%;
+    /* height: 63vh; */
+    padding: 5px;
+    background: #9c83cc;
+    border-radius: 20px;
+    align-items: center;
+    justify-content: center;
+    /*display: flex;*/
+    font-size: 12px;
+    margin: 10px;
+  }
+
+  .btn {
+    font-size: 12px
+  }
+
 }
 
 </style>
