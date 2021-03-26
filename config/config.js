@@ -1,5 +1,5 @@
 // WINDOWS
-const env = require('../.env.json')
+/* const env = require('../.env.json')
 module.exports = {
   // url : 'postgres://***REMOVED***',
   database: env.database,
@@ -15,9 +15,8 @@ module.exports = {
       rejectUnauthorized: false // <<<<<<< YOU NEED THIS
     }
   }
-}
+} */
 
-/*
 // PRODUCTION
 module.exports = {
   // url : 'postgres://***REMOVED***',
@@ -35,4 +34,3 @@ module.exports = {
     }
   }
 }
-*/
