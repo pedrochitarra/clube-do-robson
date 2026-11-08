@@ -31,6 +31,7 @@
     "pg-hstore": "^2.3.3",
     "popper.js": "^1.16.1",
     "sequelize": "^6.3.5",
+    "sqlite3": "^5.1.7",
     "trace": "^3.1.1",
     "tracer": "^1.1.4",
     "vue-router": "^3.4.9"
@@ -52,5 +53,8 @@
     "heroku",
     "express"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "allowScripts": {
+    "sqlite3@5.1.7": true
+  }
 }
