@@ -35,6 +35,7 @@ jobs:
         env:
           VUE_APP_BASE_URL: /clube-do-robson/
           VUE_APP_API_URL: ${{ vars.VUE_APP_API_URL }}
+          VUE_APP_STATIC_DATA: 'true'
           NODE_OPTIONS: --openssl-legacy-provider
         run: npm run build:pages
 
