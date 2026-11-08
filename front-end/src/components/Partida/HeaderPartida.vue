@@ -9,6 +9,8 @@
             <span class="center">{{new Date(timestamp*1000).toLocaleTimeString("pt-BR") }}</span>
             <br>
               <b-img
+                v-if="stadiumInfo && !stadiumImgError"
+                @error="stadiumImgError = true"
                 fluid
                 height="350%"
                 width="350%"
@@ -21,7 +23,7 @@
                 alt="..."
               />
               {{stadName}}
-              {{Math.round(stadiumInfo.capacity * (Math.random() * (1-0.8) + 0.8))}}
+              <template v-if="stadiumInfo">{{Math.round(stadiumInfo.capacity * (Math.random() * (1-0.8) + 0.8))}}</template>
           </div>
         </div>
         <div class='line-1-partida'>
@@ -32,7 +34,7 @@
 
                     center
                     v-bind:src="
-                      'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l' +
+                      '/crests/' +
                       data.value +
                       '.png'
                     "
@@ -47,7 +49,7 @@
 
                     center
                     v-bind:src="
-                      'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l' +
+                      '/crests/' +
                       data.value +
                       '.png'
                     "
@@ -77,6 +79,7 @@ export default {
   data () {
     return {
       stadiumInfo: null,
+      stadiumImgError: false,
       fields: [
         {
           key: 'homeCrest',

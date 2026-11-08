@@ -196,7 +196,9 @@ export default {
         if (this.membrosRobson.find(element => element.name === 'Pedro_H77') && this.membrosRobson.find(element => element.name === 'bastospereira') && this.membrosRobson.find(element => element.name === 'El_Wandershow')) { squadImage = 'banjo-canuto-sins.png' }
         if (this.membrosRobson.find(element => element.name === 'bastospereira') && this.membrosRobson.find(element => element.name === 'ThePedroso') && this.membrosRobson.find(element => element.name === 'El_Wandershow')) { squadImage = 'canuto-toto-sins.png' }
       }
-      return squadImage
+      // Nem toda combinação tem imagem em assets/squads; require() de arquivo inexistente quebra a página
+      const available = require.context('@/assets/squads', false, /\.png$/).keys()
+      return available.includes('./' + squadImage) ? squadImage : ''
     }
   },
   async created () {
