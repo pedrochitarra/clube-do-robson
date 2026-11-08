@@ -196,7 +196,9 @@ export default {
         if (this.membrosRobson.find(element => element.name === 'Pedro_H77') && this.membrosRobson.find(element => element.name === 'bastospereira') && this.membrosRobson.find(element => element.name === 'El_Wandershow')) { squadImage = 'banjo-canuto-sins.png' }
         if (this.membrosRobson.find(element => element.name === 'bastospereira') && this.membrosRobson.find(element => element.name === 'ThePedroso') && this.membrosRobson.find(element => element.name === 'El_Wandershow')) { squadImage = 'canuto-toto-sins.png' }
       }
-      return squadImage
+      // Nem toda combinação tem imagem em assets/squads; require() de arquivo inexistente quebra a página
+      const available = require.context('@/assets/squads', false, /\.png$/).keys()
+      return available.includes('./' + squadImage) ? squadImage : ''
     }
   },
   async created () {
@@ -207,42 +209,3 @@ export default {
   }
 }
 </script>
-
-<style>
-td {
-  vertical-align: middle !important;
-}
-
-.edit-form {
-  max-width: 300px;
-  margin: auto;
-}
-
-.btable {
-  text-align: center;
-  vertical-align: middle;
-  table-layout: fixed;
-
-}
-
-td {
-  text-align: center;
-}
-
-th {
-  text-align: center;
-}
-
-div.card-body {
-  text-align: center;
-}
-
-.spanCenter {
-  float:center
-}
-
-.modal-body {
-  margin: 0 auto
-}
-
-</style>

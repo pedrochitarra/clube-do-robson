@@ -7,6 +7,10 @@ Vue.use(Router)
 export default new Router({
   // mode: "history",
   routes: [
+    {
+      path: '/',
+      redirect: '/clubes/6703918'
+    },
     /* {
       path: "/",
       alias: "/clubes",

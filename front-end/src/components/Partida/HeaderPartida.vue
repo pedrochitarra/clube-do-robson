@@ -1,223 +1,146 @@
 <template>
-  <div>
+  <section class="scoreboard card-x" v-if="partida">
+    <div class="meta">
+      <span><v-icon small>mdi-calendar</v-icon> {{ data }}</span>
+      <span><v-icon small>mdi-clock-outline</v-icon> {{ hora }}</span>
+      <span><v-icon small>mdi-stadium</v-icon> {{ stadName }}</span>
+      <span v-if="publico"><v-icon small>mdi-account-group</v-icon> {{ publico.toLocaleString('pt-BR') }}</span>
+    </div>
 
-        <div class='line-1-partida'>
-          <div class='xlarge-purple-partida'>
-
-            <span class="center">{{new Date(timestamp*1000).toLocaleDateString("pt-BR") }}</span>
-            <br>
-            <span class="center">{{new Date(timestamp*1000).toLocaleTimeString("pt-BR") }}</span>
-            <br>
-              <b-img
-                fluid
-                height="350%"
-                width="350%"
-                center
-                v-bind:src="
-                  'https://www.ea.com/fifa/ultimate-team/web-app/content/21D4F1AC-91A3-458D-A64E-895AA6D871D1/2021/fut/items/images/mobile/vanity/stadium/' +
-                  stadiumInfo.stadium_id +
-                  '.png'
-                "
-                alt="..."
-              />
-              {{stadName}}
-              {{Math.round(stadiumInfo.capacity * (Math.random() * (1-0.8) + 0.8))}}
-          </div>
-        </div>
-        <div class='line-1-partida'>
-          <div class='xlarge-purple-partida'>
-              <b-table v-if="items.length > 0" :items="items" :fields="fields">
-                <template #cell(homeCrest)="data">
-                  <b-img
-
-                    center
-                    v-bind:src="
-                      'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l' +
-                      data.value +
-                      '.png'
-                    "
-                    alt="..."
-                  />
-                </template>
-                <template #cell(partidasHomeClub) = "data">
-                  <span class="spanCenter">{{data.item.partidasHomeClub.name}}</span> <br> <span class="spanCenter">{{data.item.homeGoals}} x {{data.item.awayGoals}}</span> <br> <span class="spanCenter">{{data.item.partidasAwayClub.name}}</span>
-                </template>
-                <template #cell(awayCrest)="data">
-                  <b-img
-
-                    center
-                    v-bind:src="
-                      'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l' +
-                      data.value +
-                      '.png'
-                    "
-                    alt="..."
-                  />
-                </template>
-                <template #cell(homeGoals)="data">
-                  {{data.value}} <span>x</span> {{data.item.awayGoals}}
-                </template>
-              </b-table>
-          </div>
-        </div>
+    <div class="board">
+      <div class="side" :class="{ us: partida.homeClub === clubId }">
+        <img :src="crest(partida.partidasHomeClub)" :alt="partida.partidasHomeClub.name">
+        <div class="club-name">{{ partida.partidasHomeClub.name }}</div>
+        <div class="side-label">Casa</div>
       </div>
 
+      <div class="result">
+        <div class="goals">{{ partida.homeGoals }}<i>–</i>{{ partida.awayGoals }}</div>
+        <span class="result-pill" :class="resultado">{{ { w: 'Vitória', d: 'Empate', l: 'Derrota' }[resultado] }}</span>
+      </div>
+
+      <div class="side" :class="{ us: partida.awayClub === clubId }">
+        <img :src="crest(partida.partidasAwayClub)" :alt="partida.partidasAwayClub.name">
+        <div class="club-name">{{ partida.partidasAwayClub.name }}</div>
+        <div class="side-label">Fora</div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script>
 import stadiumService from '../../services/stadiumService'
+import { crest } from '../../utils/crest'
 
 export default {
   props: {
     items: Array,
     stadName: String,
     timestamp: Number
-    // fields: Array
   },
   data () {
     return {
-      stadiumInfo: null,
-      fields: [
-        {
-          key: 'homeCrest',
-          label: 'Casa',
-          sortable: false,
-          align: 'center'
-        },
-        {
-          key: 'partidasHomeClub',
-          label: '',
-          sortable: false,
-          align: 'center'
-        },
-        {
-          key: 'awayCrest',
-          label: 'Fora ',
-          sortable: false,
-          align: 'center'
-        }
-      ]
+      clubId: 6703918,
+      publico: null
+    }
+  },
+  computed: {
+    partida () {
+      return this.items && this.items[0]
+    },
+    data () {
+      return new Date(this.timestamp * 1000).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
+    },
+    hora () {
+      return new Date(this.timestamp * 1000).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+    },
+    resultado () {
+      const p = this.partida
+      const nossos = p.homeClub === this.clubId ? Number(p.homeGoals) : Number(p.awayGoals)
+      const deles = p.homeClub === this.clubId ? Number(p.awayGoals) : Number(p.homeGoals)
+      return nossos > deles ? 'w' : nossos < deles ? 'l' : 'd'
     }
   },
   methods: {
-    async getRandomStadium () {
-      return stadiumService.getAll()
-    },
-
-    async getStadium (stadName) {
-      return stadiumService.get(stadName)
-    }
+    crest
   },
   async mounted () {
-    console.log(this.fields)
-    console.log(this.stadName)
-    console.log(this.timestamp)
-
-    // this.gameDay  = new Date(timestamp*1000).toLocaleTimeString("pt-BR")
-    // this.gameHour = new Date(timestamp*1000).toLocaleDateString("pt-BR")
-
-    this.stadiumInfo = await this.getStadium(this.stadName)
-    this.stadiumInfo = this.stadiumInfo.data[0]
-    console.log(this.stadiumInfo)
-
-    if (this.stadiumInfo === undefined) {
-      const response = await this.getRandomStadium()
-      const index = Math.round(Math.random() * 95)
-      console.log(index)
-      console.log(response)
-      this.stadiumInfo = response.data[index]
-      console.log(this.stadiumInfo)
+    // Público "simulado": 80–100% da capacidade do estádio (a Arena Robson Oliveira usa o Emirates como referência)
+    const nome = this.stadName === 'Arena Robson Oliveira' ? 'Emirates Stadium' : this.stadName
+    const { data } = await stadiumService.get(nome)
+    let estadio = data[0]
+    if (!estadio) {
+      const todos = await stadiumService.getAll()
+      estadio = todos.data[Math.floor(Math.random() * todos.data.length)]
     }
-
-    if (this.stadName === 'Arena Robson Oliveira') {
-      console.log('ROB')
-      // this.stadName = 'Emirates Stadium'
-      this.stadiumInfo = await this.getStadium('Emirates Stadium')
-      this.stadiumInfo = this.stadiumInfo.data[0]
-      console.log(this.stadiumInfo)
-      // this.stadName = 'Arena Robson Oliveira'
+    if (estadio) {
+      this.publico = Math.round(estadio.capacity * (0.8 + Math.random() * 0.2))
     }
   }
-
 }
-
 </script>
 
-<style>
+<style scoped lang="scss">
+.scoreboard {
+  padding: 24px 24px 28px;
+  margin-bottom: 16px;
+  background:
+    radial-gradient(500px 220px at 50% 0%, rgba(167, 123, 240, 0.28), transparent 70%),
+    linear-gradient(180deg, var(--surface-2), var(--surface));
+}
 
-.center {
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 20px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+  .v-icon { color: var(--muted); margin-right: 2px; }
+}
+
+.board {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+}
+
+.side {
   text-align: center;
+  img { width: 120px; height: 120px; object-fit: contain; filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.45)); }
+  &.us .club-name { color: var(--gold); }
+}
+.club-name { font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; margin-top: 8px; line-height: 1.1; }
+.side-label { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
+
+.result { text-align: center; }
+.goals {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 4.5rem;
+  line-height: 1;
+  i { font-style: normal; color: var(--muted); margin: 0 12px; font-size: 3rem; vertical-align: middle; }
+}
+.result-pill {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 3px 14px;
+  border-radius: 99px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #120c1c;
+  &.w { background: var(--win); }
+  &.d { background: var(--draw); }
+  &.l { background: var(--loss); }
 }
 
-.background-partida {
-  /*position: relative;*/
-  width: 90vw;
-  /* height: 90vh; */
-  background: #d1d1d1;
-  /*display: flex;*/
-  align-items: center;
-  justify-content: center;
-  /*position: relative;*/
-  margin: 10px auto;
+@media (max-width: 600px) {
+  .side img { width: 64px; height: 64px; }
+  .club-name { font-size: 1rem; }
+  .goals { font-size: 2.8rem; i { font-size: 1.8rem; margin: 0 6px; } }
 }
-
-.xlarge-purple-partida {
-
-  /*position: absolute;*/
-  width: 50%;
-  /* height: 63vh; */
-  padding: 5px;
-  background: #9c83cc;
-  border-radius: 20px;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  flex-direction:column;
-  margin: 5px auto;
-  text-align: center
-
-}
-
-.line-1-partida {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-  margin: 0 auto;
-}
-
-.table-partida{
-  justify-content: space-between;
-  margin: 5px auto;
-  justify-content: space-between;
-}
-
-img {
-  border-radius: 20px
-}
-
-.mx-auto.d-block{
-  width: 100%
-}
-
-@media only screen and (max-device-width: 768px) {
-
-.xlarge-purple-partida {
-
-  /*position: absolute;*/
-  width: 100%;
-  /* height: 63vh; */
-  padding: 5px;
-  background: #9c83cc;
-  border-radius: 20px;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  flex-direction:column;
-  margin: 5px auto;
-
-}
-
-}
-
 </style>
