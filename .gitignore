@@ -13,6 +13,3 @@ docker-compose.yml
 
 # Banco SQLite local (gerado de scripts/dump_to_sqlite.py)
 data/
-
-# Build local do GitHub Pages
-front-end/dist/

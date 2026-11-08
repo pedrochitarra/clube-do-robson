@@ -1,250 +1,115 @@
 <template>
   <div>
-    <div class='background'>
-      <div class='background-partida'>
-        <header-partida v-if="tabelaPartida.length > 0" v-bind:items="tabelaPartida" :timestamp="partida.timestamp" :stadName="stadName"></header-partida>
+    <a class="back" @click="voltar">← Partidas</a>
+    <div class="card" style="margin-top:12px;padding:24px;background:radial-gradient(500px 220px at 50% 0%, rgba(167,123,240,.28), transparent 70%), linear-gradient(180deg,var(--surface-2),var(--surface))">
+      <div class="meta">📅 {{ dayMonth(m.date) }} {{ m.date.getUTCFullYear() }} · 🕐 {{ hhmm(m.date) }} · 🏟️ {{ h.stadname }}<span v-if="publico"> · 👥 {{ publico }}</span></div>
+      <div class="board">
+        <div><img :src="crest(h)"><div class="cn" :class="{ gold: h.clubId === CLUB_ID }">{{ h.name }}</div><div class="lbl">Casa</div></div>
+        <div><div class="goals">{{ m.homeGoals }} – {{ m.awayGoals }}</div><span class="pill" :class="m.result">{{ RESULT_NAME[m.result] }}</span></div>
+        <div><img :src="crest(a)"><div class="cn" :class="{ gold: a.clubId === CLUB_ID }">{{ a.name }}</div><div class="lbl">Fora</div></div>
+      </div>
+    </div>
 
-        <stats-partida :items="arrayPartida"></stats-partida>
+    <div class="card" style="margin-top:16px"><div class="card-h">Estatísticas</div>
+      <div v-for="c in comparacoes" :key="c.rot" class="cmp">
+        <div class="vals">
+          <span :class="{ gold: c.vh > c.va }">{{ c.fmt(c.vh) }}</span><span>{{ c.rot }}</span><span :class="{ gold: c.va > c.vh }">{{ c.fmt(c.va) }}</span>
+        </div>
+        <div class="bars">
+          <div class="bar home"><div :style="{ width: c.vh / ((c.vh + c.va) || 1) * 100 + '%' }"></div></div>
+          <div class="bar away"><div :style="{ width: c.va / ((c.vh + c.va) || 1) * 100 + '%' }"></div></div>
+        </div>
+      </div>
+    </div>
 
-        <tabs-times-partida :membrosAway="membrosAway" :membrosHome="membrosHome" :clubeDoRobson="clubeDoRobson" :tabelaPartida="tabelaPartida" :squadImage="squadImage"></tabs-times-partida>
+    <div class="cdr-section">Escalações</div>
+    <div class="cols c2">
+      <div v-for="e in escalacoes" :key="e.clube.clubId">
+        <div class="card-h" style="text-align:center">{{ e.clube.name }}</div>
+        <div class="card" style="padding:8px 12px">
+          <table class="tbl">
+            <thead><tr><th>Jogador</th><th>G</th><th>A</th><th>Chutes</th><th>Passes</th><th>Nota</th><th></th></tr></thead>
+            <tbody>
+              <tr v-for="j in e.jogadores" :key="j.memberMatchId">
+                <td>
+                  <router-link v-if="j.nosso" :to="`/jogadores/${j.name}`" class="gold">{{ j.nome }}</router-link>
+                  <template v-else>{{ j.nome }}</template>
+                </td>
+                <td>{{ j.goals }}</td><td>{{ j.assists }}</td><td>{{ j.shots }}</td><td>{{ j.passesmade }}</td>
+                <td>{{ j.rating == null ? '' : j.rating.toFixed(1) }}</td><td>{{ j.mom === 1 ? '⭐' : '' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import * as data from '../data'
+import { crest, dayMonth, hhmm, fmtInt, RESULT_NAME } from '../utils/ui'
 
-import partidasService from '../services/partidasService'
-import robsonService from '../services/robsonService'
-import HeaderPartida from './Partida/HeaderPartida.vue'
-import StatsPartida from './Partida/StatsPartida'
-import TabsTimesPartida from './Partida/TabsTimesPartida.vue'
+// Gerador com semente (o Python usa random.Random(match_id)): público fixo por partida
+function seeded (seed) {
+  let x = 0
+  for (const ch of String(seed)) x = (x * 31 + ch.charCodeAt(0)) >>> 0
+  x ^= x << 13; x ^= x >>> 17; x ^= x << 5
+  return (x >>> 0) / 4294967296
+}
 
 export default {
-  name: 'partida',
-  components: {
-    HeaderPartida,
-    StatsPartida,
-    TabsTimesPartida
-  },
+  name: 'Partida',
   data () {
-    return {
-      // modalShow: null,
-      fixed: true,
-      membrosHome: [],
-      membrosAway: [],
-      membrosRobson: [],
-      membrosRobsonCompleto: [],
-      clubeDoRobson: null,
-      tabelaPartida: [],
+    const id = this.$route.params.id
+    const m = data.match(id)
+    const h = data.club(m.homeClub)
+    const a = data.club(m.awayClub)
+    const stats = data.clubMatchStats(id)
+    const sh = stats.find(s => s.clubId === m.homeClub) || {}
+    const sa = stats.find(s => s.clubId === m.awayClub) || {}
 
-      opcoes: [],
-      model: {
-        opcoes: [],
-        selected: null
-      },
-      currentPartida: null,
-      message: '',
-      seasons: [],
-      partida: [],
-      arrayPartida: [],
-      membroResgatado: null,
-      currentIndex: -1
+    // Público simulado: 80–100% da capacidade (a Arena Robson Oliveira usa o Emirates como referência)
+    const cap = data.stadiumCapacity(h.stadname === 'Arena Robson Oliveira' ? 'Emirates Stadium' : h.stadname)
+    const prec = s => s.passattempts ? s.passesmade / s.passattempts * 100 : 0
+    const posseH = sh.passesmade / ((sh.passesmade + sa.passesmade) || 1) * 100
+    const int = v => (v || 0).toFixed(0)
+    const pct = v => `${v.toFixed(1)}%`
+
+    const nomes = Object.fromEntries(data.members().map(p => [p.name, p.displayName]))
+    const jogadores = data.playerMatchStats(id)
+    const escalacoes = [h, a].map(clube => ({
+      clube,
+      jogadores: jogadores
+        .filter(j => String(j.clubid) === String(clube.clubId))
+        .map(j => ({ ...j, nome: nomes[j.name] || j.name, nosso: !!nomes[j.name] }))
+        .sort((x, y) => (y.rating || 0) - (x.rating || 0))
+    }))
+
+    return {
+      CLUB_ID: data.CLUB_ID,
+      RESULT_NAME,
+      m,
+      h,
+      a,
+      publico: cap ? fmtInt(cap * (0.8 + seeded(id) * 0.2)) : null,
+      comparacoes: [
+        { rot: 'Passes', vh: sh.passesmade || 0, va: sa.passesmade || 0, fmt: int },
+        { rot: 'Precisão no passe', vh: prec(sh), va: prec(sa), fmt: pct },
+        { rot: 'Posse de bola', vh: posseH, va: 100 - posseH, fmt: pct },
+        { rot: 'Chutes', vh: sh.shots || 0, va: sa.shots || 0, fmt: int },
+        { rot: 'Divididas', vh: sh.tacklesmade || 0, va: sa.tacklesmade || 0, fmt: int }
+      ],
+      escalacoes
     }
   },
   methods: {
-
-    async getPartida () {
-      const partidaId = this.$route.params.partidaId
-      const response = await partidasService.getOne(partidaId)
-
-      this.partida = response.data[0]
-
-      this.stadName = this.partida.partidasHomeClub.stadname
-      this.partida.passes = 'Passes'
-      this.partida.posse = 'Posse de bola'
-      this.partida.chutes = 'Chutes'
-      this.partida.precisao = 'Precisão no passe'
-      this.partida.divididas = 'Divididas'
-
-      const homeClub = this.partida.homeClub
-      const awayClub = this.partida.awayClub
-      let homeClubStats = []
-      let awayClubStats = []
-
-      this.partida.partidasClubesPartidas.forEach(stats => {
-        if (stats.clubId === homeClub) {
-          homeClubStats = stats
-        } else if (stats.clubId === awayClub) {
-          awayClubStats = stats
-        }
-      })
-
-      if (homeClubStats.clubId === 6703918) {
-        this.clubeDoRobson = 'HOME'
-      } else {
-        this.clubeDoRobson = 'AWAY'
-      }
-
-      if (this.partida.partidasAwayClub.iscustomteam === 1) {
-        this.partida.awayCrest = this.partida.partidasAwayClub.customcrestid
-      } else if (this.partida.partidasAwayClub.iscustomteam === 0) {
-        this.partida.awayCrest = this.partida.partidasAwayClub.teamId
-      }
-      if (this.partida.partidasHomeClub.iscustomteam === 1) {
-        this.partida.homeCrest = this.partida.partidasHomeClub.customcrestid
-      } else if (this.partida.partidasHomeClub.iscustomteam === 0) {
-        this.partida.homeCrest = this.partida.partidasHomeClub.teamId
-      }
-
-      const tentativasPasseAway = awayClubStats.passattempts
-      const passesAway = awayClubStats.passesmade
-      const precisaoAway = passesAway / tentativasPasseAway
-
-      this.partida.partidasClubesPartidas.tentativasPasseAway = tentativasPasseAway
-      this.partida.partidasClubesPartidas.passesAway = passesAway
-      this.partida.partidasClubesPartidas.precisaoPasseAway = parseFloat(precisaoAway * 100).toFixed(2) + ' %'
-
-      const tentativasPasseHome = homeClubStats.passattempts
-      const passesHome = homeClubStats.passesmade
-      const precisaoHome = passesHome / tentativasPasseHome
-
-      this.partida.partidasClubesPartidas.tentativasPasseHome = tentativasPasseHome
-      this.partida.partidasClubesPartidas.passesHome = passesHome
-      this.partida.partidasClubesPartidas.precisaoPasseHome = parseFloat(precisaoHome * 100).toFixed(2) + ' %'
-
-      let posseDeBolaAway = passesAway / (passesAway + passesHome)
-      posseDeBolaAway = parseFloat(posseDeBolaAway * 100).toFixed(2)
-
-      let posseDeBolaHome = 100 - posseDeBolaAway
-      posseDeBolaHome = parseFloat(posseDeBolaHome).toFixed(2)
-
-      this.partida.partidasClubesPartidas.posseAway = posseDeBolaAway + ' %'
-      this.partida.partidasClubesPartidas.posseHome = posseDeBolaHome + ' %'
-
-      this.arrayPartida = [
-        {
-          casa: homeClubStats.passesmade,
-          label: 'Passes',
-          fora: awayClubStats.passesmade
-        },
-        {
-          casa: this.partida.partidasClubesPartidas.precisaoPasseHome,
-          label: 'Precisão no passe',
-          fora: this.partida.partidasClubesPartidas.precisaoPasseAway
-        },
-        {
-          casa: this.partida.partidasClubesPartidas.posseHome,
-          label: 'Posse de bola',
-          fora: this.partida.partidasClubesPartidas.posseAway
-        },
-        {
-          casa: homeClubStats.shots,
-          label: 'Chutes',
-          fora: awayClubStats.shots
-        },
-        {
-          casa: homeClubStats.tacklesmade,
-          label: 'Divididas',
-          fora: awayClubStats.tacklesmade
-        }
-      ]
-
-      this.partida.partidasMembrosPartidas.forEach(membro => {
-        if (membro.clubid === homeClubStats.clubId) {
-          this.membrosHome.push(membro)
-          if (membro.clubid === 6703918) {
-            this.membrosRobson.push(membro)
-          }
-        } else {
-          this.membrosAway.push(membro)
-          if (membro.clubid === 6703918) {
-            this.membrosRobson.push(membro)
-          }
-        }
-      })
-
-      this.squadImage = this.getSquadImage()
-      console.log(this.squadImage)
-      const resposta = await robsonService.getAll()
-      this.robsoners = resposta.data
-
-      let membroResgatado = null
-      this.membrosRobson.forEach((membro, i) => {
-        membroResgatado = this.robsoners.find(
-          (robsoner) => robsoner.name === membro.name
-        )
-        console.log(membro)
-        if (membroResgatado) {
-          this.membrosRobson[i].face = membroResgatado.face
-        }
-      })
-
-      this.tabelaPartida = [this.partida]
-    },
-
-    getSquadImage () {
-      let squadImage = ''
-      if (this.membrosRobson.length === 2) {
-        if (this.membrosRobson.find(element => element.name === 'Pedro_H77') && this.membrosRobson.find(element => element.name === 'bastospereira')) { squadImage = 'banjo-canuto.png' }
-        if (this.membrosRobson.find(element => element.name === 'bastospereira') && this.membrosRobson.find(element => element.name === 'El_Wandershow')) { squadImage = 'canuto-sins.png' }
-      }
-
-      if (this.membrosRobson.length === 3) {
-        console.log('TRESSSS')
-        if (this.membrosRobson.find(element => element.name === 'Pedro_H77') && this.membrosRobson.find(element => element.name === 'bastospereira') && this.membrosRobson.find(element => element.name === 'ThePedroso')) { squadImage = 'banjo-canuto-toto.png' }
-        if (this.membrosRobson.find(element => element.name === 'Pedro_H77') && this.membrosRobson.find(element => element.name === 'bastospereira') && this.membrosRobson.find(element => element.name === 'El_Wandershow')) { squadImage = 'banjo-canuto-sins.png' }
-        if (this.membrosRobson.find(element => element.name === 'bastospereira') && this.membrosRobson.find(element => element.name === 'ThePedroso') && this.membrosRobson.find(element => element.name === 'El_Wandershow')) { squadImage = 'canuto-toto-sins.png' }
-      }
-      // Nem toda combinação tem imagem em assets/squads; require() de arquivo inexistente quebra a página
-      const available = require.context('@/assets/squads', false, /\.png$/).keys()
-      return available.includes('./' + squadImage) ? squadImage : ''
+    crest,
+    dayMonth,
+    hhmm,
+    voltar () {
+      this.$router.push({ path: '/partidas', query: this.m.season != null ? { t: this.m.season } : {} })
     }
-  },
-  async created () {
-    this.message = ''
-    console.log(this.$route.params)
-    await this.getPartida()
-    // this.getPartidas(null, this.$route.params.clubId);
   }
 }
 </script>
-
-<style>
-td {
-  vertical-align: middle !important;
-}
-
-.edit-form {
-  max-width: 300px;
-  margin: auto;
-}
-
-.btable {
-  text-align: center;
-  vertical-align: middle;
-  table-layout: fixed;
-
-}
-
-td {
-  text-align: center;
-}
-
-th {
-  text-align: center;
-}
-
-div.card-body {
-  text-align: center;
-}
-
-.spanCenter {
-  float:center
-}
-
-.modal-body {
-  margin: 0 auto
-}
-
-</style>

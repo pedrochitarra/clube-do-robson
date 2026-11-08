@@ -1,8 +1,6 @@
 module.exports = {
-  // O repositório é publicado em /clube-do-robson/ no GitHub Pages.
-  // Em desenvolvimento, o app continua sendo servido na raiz.
-  publicPath: process.env.VUE_APP_BASE_URL || (process.env.NODE_ENV === 'production' ? '/clube-do-robson/' : '/'),
-  lintOnSave: false,
+  // GitHub Pages serve em /<repo>/; PUBLIC_PATH vem do workflow
+  publicPath: process.env.PUBLIC_PATH || '/',
   transpileDependencies: [
     'vuetify'
   ],

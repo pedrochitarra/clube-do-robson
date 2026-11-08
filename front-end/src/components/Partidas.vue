@@ -1,12 +1,48 @@
 <template>
-  <main class="container python-page"><p class="cdr-title">Partidas</p><p class="cdr-sub">Jogos registrados por temporada</p>
-    <div class="season-pills"><button v-for="season in seasons" :key="season" :class="{ active: selectedSeason === season }" @click="selectedSeason = season">Temporada {{ season }}</button></div>
-    <section class="cdr-grid g4 season-summary"><div class="card summary"><div class="big">{{ filtered.length }}</div><div class="lbl">Jogos</div></div><div class="card summary"><div class="big w">{{ count('w') }}</div><div class="lbl">Vitórias</div></div><div class="card summary"><div class="big d">{{ count('d') }}</div><div class="lbl">Empates</div></div><div class="card summary"><div class="big l">{{ count('l') }}</div><div class="lbl">Derrotas</div></div></section>
-    <section class="matches-list"><router-link v-for="match in filtered" :key="match.matchId" class="card match" :class="match.result" :to="{ name: 'partida', params: { partidaId: match.matchId } }"><div class="dt">{{ day(match.timestamp) }}<small>{{ time(match.timestamp) }}</small></div><div class="team home" :class="{ us: isUs(match.homeClub) }"><span>{{ teamName(match.homeClub) }}</span><img :src="crest(team(match.homeClub))" @error="fallback"></div><div class="score">{{ match.homeGoals }} – {{ match.awayGoals }}</div><div class="team" :class="{ us: isUs(match.awayClub) }"><img :src="crest(team(match.awayClub))" @error="fallback"><span>{{ teamName(match.awayClub) }}</span></div><span class="badge" :class="match.result">{{ label(match.result) }}</span></router-link></section>
-  </main>
+  <div>
+    <p class="cdr-title">Partidas</p><p class="cdr-sub">Jogos registrados por temporada</p>
+    <div class="pills">
+      <button v-for="t in temporadas" :key="t" :class="{ on: t === temporada }" @click="escolhe(t)">Temporada {{ t }}</button>
+    </div>
+
+    <div class="cdr-grid g4" style="margin:6px 0 18px">
+      <div class="card" style="text-align:center"><div class="big">{{ jogos.length }}</div><div class="lbl">Jogos</div></div>
+      <div class="card" style="text-align:center"><div class="big w">{{ conta('w') }}</div><div class="lbl">Vitórias</div></div>
+      <div class="card" style="text-align:center"><div class="big d">{{ conta('d') }}</div><div class="lbl">Empates</div></div>
+      <div class="card" style="text-align:center"><div class="big l">{{ conta('l') }}</div><div class="lbl">Derrotas</div></div>
+    </div>
+
+    <router-link v-for="m in jogos" :key="m.matchId" :to="`/partidas/${m.matchId}`" class="card match" :class="m.result">
+      <div class="dt">{{ dayMonth(m.date) }}<small>{{ hhmm(m.date) }}</small></div>
+      <div class="team home" :class="{ us: m.h.clubId === CLUB_ID }"><span>{{ m.h.name }}</span><img :src="crest(m.h)"></div>
+      <div class="score">{{ m.homeGoals }} – {{ m.awayGoals }}</div>
+      <div class="team" :class="{ us: m.a.clubId === CLUB_ID }"><img :src="crest(m.a)"><span>{{ m.a.name }}</span></div>
+      <span class="badge" :class="m.result">{{ RESULT_LABEL[m.result] }}</span>
+    </router-link>
+  </div>
 </template>
+
 <script>
-import partidasService from '../services/partidasService'
-import clubesService from '../services/clubesService'
-export default { name: 'Partidas', data: () => ({ matches: [], clubs: {}, selectedSeason: null }), computed: { baseUrl () { return process.env.BASE_URL || '/' }, seasons () { return [...new Set(this.matches.map(item => item.season).filter(Boolean))].sort((a, b) => b - a) }, filtered () { return this.matches.filter(item => !this.selectedSeason || String(item.season) === String(this.selectedSeason)) } }, async mounted () { this.matches = (await partidasService.getAll(this.$route.params.clubId)).data; this.selectedSeason = this.seasons[0]; const ids = [...new Set(this.matches.flatMap(item => [item.homeClub, item.awayClub]))]; for (const id of ids) this.$set(this.clubs, id, (await clubesService.get(id)).data) }, methods: { team (id) { return this.clubs[id] || {} }, teamName (id) { return this.team(id).name || 'Clube' }, isUs (id) { return String(id) === '6703918' }, crest (club) { const id = club && (club.iscustomteam ? club.customcrestid : club.teamId); return this.baseUrl + 'crests/' + (id || '99150901') + '.png' }, fallback (event) { event.target.src = this.baseUrl + 'crests/99150901.png' }, day (timestamp) { const date = new Date(Number(timestamp) * 1000); return String(date.getDate()).padStart(2, '0') + ' ' + ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'][date.getMonth()] }, time (timestamp) { return new Date(Number(timestamp) * 1000).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) }, count (result) { return this.filtered.filter(item => item.result === result).length }, label (result) { return { w: 'V', d: 'E', l: 'D' }[result] } } }
+import * as data from '../data'
+import { crest, dayMonth, hhmm, RESULT_LABEL } from '../utils/ui'
+
+export default {
+  name: 'Partidas',
+  data () {
+    const partidas = data.matches().map(m => ({ ...m, h: data.club(m.homeClub), a: data.club(m.awayClub) }))
+    const temporadas = [...new Set(partidas.map(m => m.season).filter(s => s != null))].sort((a, b) => b - a)
+    return { CLUB_ID: data.CLUB_ID, RESULT_LABEL, partidas, temporadas, temporada: Number(this.$route.query.t) || temporadas[0] }
+  },
+  computed: {
+    jogos () { return this.partidas.filter(m => m.season === this.temporada) }
+  },
+  methods: {
+    crest,
+    dayMonth,
+    hhmm,
+    // Temporada na URL para o "voltar" da partida cair nela de novo
+    escolhe (t) { this.$router.replace({ query: { t } }) },
+    conta (r) { return this.jogos.filter(m => m.result === r).length }
+  }
+}
 </script>

@@ -15,19 +15,26 @@ npm start                        # nodemon index.js (porta $PORT ou 5500)
 node schedule.js                 # coletor
 cd front-end && npm run serve    # dev do front
 ```
-Banco: `config/config.js` usa Postgres se `.env` tiver `database`/`host` (+`username`/`password`, porta 5432, SSL); senão usa SQLite em `data/clubedorobson.sqlite` (ou `SQLITE_PATH`). Gerar o SQLite do único backup existente (24/02/2021, 4.391 linhas):
+Banco: `config/config.js` usa Postgres se `.env` tiver `database`/`host` (+`username`/`password`, porta 5432, SSL); senão usa SQLite em `data/clubedorobson.sqlite` (ou `SQLITE_PATH`). **Banco único**: a fonte é `../clubedorobson-py/data/raw/clubedorobson.db`; este projeto só gera uma cópia com as tabelas renomeadas para os nomes dos models:
 ```
-python scripts/dump_to_sqlite.py ../clubedorobson-py/data/raw/dump_original.sql data/clubedorobson.sqlite
+python scripts/build_sqlite.py
 ```
+Correções de dados vão no banco do clubedorobson-py, nunca aqui. `scripts/dump_to_sqlite.py` reconstrói do `dump_original.sql` (backup de 24/02/2021) e fica só como referência.
 `data/` está no `.gitignore`. `sqlite3` é dependência nativa: no npm 11+ precisa de `npm install-scripts approve sqlite3`. `config/config.json` é para o sequelize-cli e usa `DATABASE_URL`.
 Front usa `baseURL: '/api'` (relativo, `front-end/src/http-common.js`); em `npm run serve` o proxy do `vue.config.js` manda `/api` para `localhost:5500`. Build no Node 24: `NODE_OPTIONS=--openssl-legacy-provider npm run build` (webpack 4).
+
+## GitHub Pages (front estático)
+O front é um port direto do painel Streamlit do `clubedorobson-py` (mesmo CSS, mesmas telas) e **não usa o Express**: lê `front-end/public/data/clubedorobson.json`, snapshot do banco único gerado por `python scripts/export_snapshot.py` (rodar de novo quando o banco do Python mudar e commitar). `src/data.js` espelha o `src/data.py`, `src/utils/ui.js` o `src/ui.py`, `src/styles/theme.css` é o CSS do `ui.py`. Rotas (hash): `/clube`, `/jogadores`, `/jogadores/:tag`, `/partidas?t=<temporada>`, `/partidas/:id` (URLs antigas redirecionam).
+`.github/workflows/deploy-pages.yml` builda (`PUBLIC_PATH=/clube-do-robson/`) e publica no branch `gh-pages` a cada push na `main`/`master`: https://pedrochitarra.github.io/clube-do-robson/. Imagens: `public/crests`, `public/players` (inclui `_default.png`) e `public/trophies`, copiadas do `clubedorobson-py/static`.
 
 ## Estrutura
 - `app/models/` — Sequelize, carregados por `index.js`. Tabelas: `Clubes`, `Membros` (PK = nome do jogador), `Partidas`, `ClubesPartidas` (stats do clube por partida, PK `matchId+clubId`), `MembrosPartidas` (PK `playername+matchId`), `Seasonal` (PK clubid), `Robsoners` (cadastro manual dos membros do clube), `Estadios`.
 - `app/controllers/` + `app/routes/` — um par por recurso, montados em `/api/<recurso>` (`clubes`, `clubesPartidas`, `membros`, `membrosPartidas`, `partidas`, `robsoners`, `seasonals`, `stadiums`).
 - `database/migrations/` — migrations do sequelize-cli (nem todas as tabelas têm migration: Seasonal, Robsoners, Estadios faltam).
 - `common/logger.js` — tracer.
-- `front-end/src/` — `router.js`, `components/` (Clube, MembrosList, Membro, Partidas, Partida/*, RadarHex, Pizza, Slider), `services/` (wrappers axios por recurso).
+- `front-end/src/` — `router.js` (`/` redireciona para o Clube), `components/` (Clube, MembrosList, Membro, Partidas, Partida/*; RadarHex, Pizza e Slider estão sem uso), `services/` (wrappers axios por recurso), `utils/crest.js` (escudo local do clube).
+- Visual: tema escuro único em `front-end/src/styles/theme.scss` (tokens CSS `--bg`, `--surface*`, `--gold`, `--win/--draw/--loss` e classes `.page`, `.card-x`, `.grid-*`, `.stat-big`, `.kv`, `.bar`), importado no `App.vue`. Componentes usam `<style scoped>` e os tokens; não redefinir cores nem `body`. Fontes Barlow Condensed (números/títulos) e Inter. Bootstrap CSS via CDN fixo em 4.6.2 (o bootstrap-vue não funciona com o 5).
+- Imagens locais: `front-end/public/crests/<id>.png` (escudos, `scripts/download_crests.py`) e `front-end/public/players/<gamertag>.png` (fotos dos Robsoners, vindas do `clubedorobson-py/assets/players`).
 - `public/`, `lib/tasks/`, `app.json` — sobras do template Heroku.
 
 ## API da EA usada (`schedule.js`)
@@ -39,6 +46,7 @@ A API só devolve as últimas ~5 partidas — por isso o histórico depende do b
 - **Banco Heroku**: apagado. Único backup é o dump de 24/02/2021; o Heroku avisou 7.060 linhas em 14/03/2021, então ~2.7k linhas posteriores estão perdidas (busca exaustiva feita em nov/2026).
 - **Credenciais vazadas**: a URL do Postgres foi removida de `config/config.js`, mas continua no histórico do GitHub (banco já não existe).
 - Imagens externas mortas: estádios (CDN da EA, agora escondidas no erro) e avatares em `MembrosList.vue` (`funkyimg.com`).
+- O nome do `El_Wandershow` é "Show" (o dump original dizia "Sins").
 - `assets/squads` não tem imagem para todas as combinações de jogadores (`Partida.vue#getSquadImage` agora ignora as ausentes).
 - `schedule.js`: `forEach(async ...)` sem await (upserts concorrentes/erros perdidos); muito código duplicado home/away; `updateSeasonal()` roda solto no topo; cron só chama `updateMatches`; `divswon*` hardcoded; clubId e plataforma hardcoded.
 - Dependências de 2021 (Vue 2 EOL, axios 0.21, Node 12) e deps inúteis (`cool-ascii-faces`, `jquery`, `mysql2`, `logger`, `trace`).
