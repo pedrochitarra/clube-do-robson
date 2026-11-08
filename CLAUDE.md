@@ -15,10 +15,11 @@ npm start                        # nodemon index.js (porta $PORT ou 5500)
 node schedule.js                 # coletor
 cd front-end && npm run serve    # dev do front
 ```
-Banco: `config/config.js` usa Postgres se `.env` tiver `database`/`host` (+`username`/`password`, porta 5432, SSL); senão usa SQLite em `data/clubedorobson.sqlite` (ou `SQLITE_PATH`). Gerar o SQLite do único backup existente (24/02/2021, 4.391 linhas):
+Banco: `config/config.js` usa Postgres se `.env` tiver `database`/`host` (+`username`/`password`, porta 5432, SSL); senão usa SQLite em `data/clubedorobson.sqlite` (ou `SQLITE_PATH`). **Banco único**: a fonte é `../clubedorobson-py/data/raw/clubedorobson.db`; este projeto só gera uma cópia com as tabelas renomeadas para os nomes dos models:
 ```
-python scripts/dump_to_sqlite.py ../clubedorobson-py/data/raw/dump_original.sql data/clubedorobson.sqlite
+python scripts/build_sqlite.py
 ```
+Correções de dados vão no banco do clubedorobson-py, nunca aqui. `scripts/dump_to_sqlite.py` reconstrói do `dump_original.sql` (backup de 24/02/2021) e fica só como referência.
 `data/` está no `.gitignore`. `sqlite3` é dependência nativa: no npm 11+ precisa de `npm install-scripts approve sqlite3`. `config/config.json` é para o sequelize-cli e usa `DATABASE_URL`.
 Front usa `baseURL: '/api'` (relativo, `front-end/src/http-common.js`); em `npm run serve` o proxy do `vue.config.js` manda `/api` para `localhost:5500`. Build no Node 24: `NODE_OPTIONS=--openssl-legacy-provider npm run build` (webpack 4).
 
@@ -41,6 +42,7 @@ A API só devolve as últimas ~5 partidas — por isso o histórico depende do b
 - **Banco Heroku**: apagado. Único backup é o dump de 24/02/2021; o Heroku avisou 7.060 linhas em 14/03/2021, então ~2.7k linhas posteriores estão perdidas (busca exaustiva feita em nov/2026).
 - **Credenciais vazadas**: a URL do Postgres foi removida de `config/config.js`, mas continua no histórico do GitHub (banco já não existe).
 - Imagens externas mortas: estádios (CDN da EA, agora escondidas no erro) e avatares em `MembrosList.vue` (`funkyimg.com`).
+- O nome do `El_Wandershow` é "Show" (o dump original dizia "Sins").
 - `assets/squads` não tem imagem para todas as combinações de jogadores (`Partida.vue#getSquadImage` agora ignora as ausentes).
 - `schedule.js`: `forEach(async ...)` sem await (upserts concorrentes/erros perdidos); muito código duplicado home/away; `updateSeasonal()` roda solto no topo; cron só chama `updateMatches`; `divswon*` hardcoded; clubId e plataforma hardcoded.
 - Dependências de 2021 (Vue 2 EOL, axios 0.21, Node 12) e deps inúteis (`cool-ascii-faces`, `jquery`, `mysql2`, `logger`, `trace`).
