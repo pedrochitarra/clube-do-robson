@@ -1,299 +1,173 @@
 <template>
-  <div v-if='currentClube'>
-    <div class='background'>
-      <div class='background-clubs'>
-        <div class='line-1-clubs'>
-          <div class='small-purple'>
-            <p style='text-align: center'>
-              <strong>Histórico Geral</strong>
-            </p>
-            <span class='leftFix'>Jogos</span>
-            <span class='rightFix'>{{ seasonalData.totalgames }}</span>
-            <br />
-            <span class='leftFix'>Vitórias</span>
-            <span class='rightFix'>{{ seasonalData.wins }}</span>
-            <br />
-            <span class='leftFix'>Empates</span>
-            <span class='rightFix'>{{ seasonalData.ties }}</span>
-            <br />
-            <span class='leftFix'>Derrotas</span>
-            <span class='rightFix'>{{ seasonalData.losses }}</span>
-          </div>
-          <div class='small-purple'>
-            <p style='text-align: center'>
-              <strong>Temporadas</strong>
-            </p>
-            <span class='leftFix'>Total de temporadas</span>
-            <span class='rightFix'>{{ seasonalData.seasons }}</span>
-            <br />
-            <span class='leftFix'>Total de Títulos</span>
-            <span class='rightFix'>{{ seasonalData.titleswon }}</span>
-            <br />
-            <span class='leftFix'>Melhor divisão</span>
-            <span class='rightFix'>{{ seasonalData.bestdivision }}</span>
-            <br />
-            <span class='leftFix'>Melhor pontuação</span>
-            <span class='rightFix'>{{ seasonalData.bestpoints }}</span>
-            <br />
-            <span class='leftFix'>Acessos</span>
-            <span class='rightFix'>{{ seasonalData.promotions }}</span>
-            <br />
-            <span class='leftFix'>Rebaixamentos</span>
-            <span class='rightFix'>{{ seasonalData.relegations }}</span>
-            <br />
-          </div>
-          <div class='small-purple'>
-            <p style='text-align: center'>
-              <strong>Desempenho</strong>
-            </p>
-            <span class='leftFix'>Gols marcados</span>
-            <span class='rightFix'>{{ seasonalData.alltimegoals }}</span>
-            <br />
-            <span class='leftFix'>Gols sofridos</span>
-            <span class='rightFix'>{{ seasonalData.alltimegoalsagainst }}</span>
-            <br />
-            <span class='leftFix'>Pontos no ranking</span>
-            <span class='rightFix'>{{ seasonalData.rankingpoints }}</span>
-            <br />
-            <span class='leftFix'>Reputação</span>
-            <span class='rightFix'>{{ seasonalData.starlevel }}</span>
-          </div>
+  <div class="page" v-if="clube && seasonal">
+    <section class="hero card-x">
+      <img class="hero-crest" :src="crest(clube)" :alt="clube.name">
+      <div class="hero-info">
+        <h1 class="page-title">{{ clube.name }}</h1>
+        <p class="hero-meta">
+          <v-icon small>mdi-stadium</v-icon> {{ clube.stadname }}
+          <span class="dot">·</span>
+          <v-icon small color="secondary">mdi-star</v-icon> Reputação {{ seasonal.starlevel }}
+        </p>
+        <div class="hero-record">
+          <div><span class="stat-big">{{ seasonal.totalgames }}</span><div class="stat-label">Jogos</div></div>
+          <div><span class="stat-big result-w">{{ seasonal.wins }}</span><div class="stat-label">Vitórias</div></div>
+          <div><span class="stat-big result-d">{{ seasonal.ties }}</span><div class="stat-label">Empates</div></div>
+          <div><span class="stat-big result-l">{{ seasonal.losses }}</span><div class="stat-label">Derrotas</div></div>
         </div>
+        <div class="bar" :title="`${winPct}% de vitórias`">
+          <div :style="{ width: pct(seasonal.wins) + '%', background: 'var(--win)' }"></div>
+          <div :style="{ width: pct(seasonal.ties) + '%', background: 'var(--draw)' }"></div>
+          <div :style="{ width: pct(seasonal.losses) + '%', background: 'var(--loss)' }"></div>
+        </div>
+        <p class="bar-caption">Venceu {{ winPct }}% dos jogos</p>
+      </div>
+    </section>
 
-        <!-- ARRUMAR CANVAS
-        <div class='line-2-clubs'>
-          <div class='x-large-purple-clube'>
-            <line-chart
-              class='seasonal-chart'
-              v-if='seasonalData != null'
-              :chartData='chartData'
-              :options='chartOptions'
-            />
-            <div class='seasonal-chart'>
-              <b-img
-              fluid
-              id="url"/>
-            </div>
-          </div>
-        </div>-->
-        <div class='line-2-clubs'>
-          <div class='x-large-purple-clube'>
-            <p style='text-align: center'>
-              <strong>Títulos</strong>
-            </p>
-              <div id="slider" class="slider">
-                <Slider :seasonalData="seasonalData"></Slider>
-              </div>
-          </div>
-        </div>
+    <div class="grid grid-3 section">
+      <div class="card-x">
+        <h2 class="card-title-x">Ataque e defesa</h2>
+        <div class="kv"><span>Gols marcados</span><span>{{ seasonal.alltimegoals }}</span></div>
+        <div class="kv"><span>Gols sofridos</span><span>{{ seasonal.alltimegoalsagainst }}</span></div>
+        <div class="kv"><span>Saldo</span><span :class="goalDiff >= 0 ? 'result-w' : 'result-l'">{{ goalDiff > 0 ? '+' : '' }}{{ goalDiff }}</span></div>
+        <div class="kv"><span>Gols por jogo</span><span>{{ perGame(seasonal.alltimegoals) }}</span></div>
+      </div>
+      <div class="card-x">
+        <h2 class="card-title-x">Temporadas</h2>
+        <div class="kv"><span>Disputadas</span><span>{{ seasonal.seasons }}</span></div>
+        <div class="kv"><span>Acessos</span><span class="result-w">{{ seasonal.promotions }}</span></div>
+        <div class="kv"><span>Rebaixamentos</span><span class="result-l">{{ seasonal.relegations }}</span></div>
+        <div class="kv"><span>Melhor divisão</span><span>{{ seasonal.bestdivision }}ª</span></div>
+      </div>
+      <div class="card-x">
+        <h2 class="card-title-x">Ranking</h2>
+        <div class="kv"><span>Pontos no ranking</span><span>{{ seasonal.rankingpoints }}</span></div>
+        <div class="kv"><span>Melhor pontuação</span><span>{{ seasonal.bestpoints }}</span></div>
+        <div class="kv"><span>Títulos</span><span class="gold">{{ seasonal.titleswon }}</span></div>
+        <div class="kv"><span>Divisão atual</span><span>{{ seasonal.currentdivision || '—' }}</span></div>
       </div>
     </div>
+
+    <section class="section">
+      <h2 class="section-title">Sala de troféus <span class="gold">{{ seasonal.titleswon }}</span></h2>
+      <div class="grid grid-4">
+        <div class="card-x trophy" v-for="t in trophies" :key="t.label" :class="{ empty: !t.count }">
+          <img :src="t.img" :alt="t.label">
+          <div class="trophy-count">{{ t.count }}</div>
+          <div class="stat-label">{{ t.label }}</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="page loading" v-else>
+    <v-progress-circular indeterminate color="primary"></v-progress-circular>
   </div>
 </template>
 
 <script>
 import clubesService from '../services/clubesService'
 import seasonalService from '../services/seasonalService'
-// import LineChart from '../components/Pizza.vue'
-import Slider from '../components/Slider.vue'
+import { crest } from '../utils/crest'
 
 export default {
   name: 'clube',
-  components: {
-    Slider
-  },
   data () {
     return {
-      currentClube: null,
-      seasonalData: null,
-      message: '',
-      chartOptions: {
-        responsive: true,
-        title: {
-          display: false
-        }
-      },
-      chartData: {}
+      clube: null,
+      seasonal: null
+    }
+  },
+  computed: {
+    winPct () {
+      return this.pct(this.seasonal.wins).toFixed(0)
+    },
+    goalDiff () {
+      return this.seasonal.alltimegoals - this.seasonal.alltimegoalsagainst
+    },
+    trophies () {
+      const s = this.seasonal
+      return [
+        { label: '1ª Divisão', count: s.leaguewins, img: require('@/assets/trophies/league.png') },
+        { label: 'Divisões 2 e 3', count: s.divswon2, img: require('@/assets/trophies/2-3.png') },
+        { label: 'Divisões 4 a 7', count: s.divswon3, img: require('@/assets/trophies/4-5-6-7.png') },
+        { label: 'Divisões 8 a 10', count: s.divswon4, img: require('@/assets/trophies/8-9-10.png') }
+      ]
     }
   },
   methods: {
-    async getClube (id) {
-      const response = await clubesService.get(id)
-      this.currentClube = response.data
-      console.log(this.currentClube)
+    crest,
+    pct (n) {
+      return this.seasonal.totalgames ? (n / this.seasonal.totalgames) * 100 : 0
     },
-
-    async getSeasonal () {
-      const response = await seasonalService.getAll()
-      this.seasonalData = response.data
-      console.log(this.seasonalData)
-
-      this.chartData.datasets = []
-      this.chartData.datasets.push({
-        backgroundColor: [
-          'rgba(22, 204, 28, 0.7)',
-          'rgba(232, 232, 16,0.7)',
-          'rgba(232, 16, 23,0.7)'
-        ],
-        label: '',
-        data: [
-          this.seasonalData.wins,
-          this.seasonalData.ties,
-          this.seasonalData.losses
-        ]
-      })
-
-      this.chartData.labels = ['Vitórias', 'Empates', 'Derrotas']
+    perGame (n) {
+      return this.seasonal.totalgames ? (n / this.seasonal.totalgames).toFixed(2) : '—'
     }
   },
-
   async mounted () {
-    this.message = ''
-    await this.getClube(this.$route.params.id)
-    await this.getSeasonal()
+    const [clube, seasonal] = await Promise.all([
+      clubesService.get(this.$route.params.id),
+      seasonalService.getAll()
+    ])
+    this.clube = clube.data
+    this.seasonal = seasonal.data
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.loading { display: flex; justify-content: center; padding-top: 120px; }
 
-body {
-  background: #d1d1d1;
-  /*font-family: 'Muli', sans-serif;*/
+.hero {
   display: flex;
-  margin: 0;
-  /*flex-direction: column;*/
+  gap: 32px;
   align-items: center;
-  justify-content: center;
-  height: 90vh;
-  overflow: hidden;
-  color: #333333;
+  padding: 32px;
+  background:
+    radial-gradient(600px 300px at 0% 0%, rgba(167, 123, 240, 0.25), transparent 70%),
+    linear-gradient(180deg, var(--surface-2), var(--surface));
 }
-
-.rightFix {
-  float: right;
+.hero-crest {
+  width: 168px;
+  height: 168px;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 30px rgba(124, 77, 206, 0.5));
+  flex-shrink: 0;
 }
-
-.leftFix {
-  float: left;
+.hero-info { flex: 1; min-width: 0; }
+.hero-meta { color: var(--muted); margin: 0 0 20px; .dot { margin: 0 8px; } }
+.hero-record {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  justify-content: start;
+  gap: 32px;
+  margin-bottom: 18px;
 }
+.bar-caption { color: var(--muted); font-size: 0.85rem; margin: 8px 0 0; }
 
-.headerClube {
-  padding: 0.1%;
+.section { margin-top: 24px; }
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0 0 14px;
 }
+.gold { color: var(--gold); }
 
-.background {
-  background: #d1d1d1;
-}
-
-.background-clubs {
-  /*position: relative;*/
-  width: 90vw;
-  /* height: 90vh; */
-  background: #d1d1d1;
-  /*display: flex;*/
-  /*position: relative;*/
-  margin: 10px auto;
-}
-
-.line-1-clubs {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-  margin: 0 auto;
-}
-
-.line-2-clubs {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  margin: 0 auto;
-}
-
-.small-purple {
-  /*position: absolute;*/
-  width: 28%;
-  /* height: 23vh; */
-  background-color: #9c83cc;
-  border-radius: 20px;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
-  /*display: flex;*/
-  margin: 10px;
-  font-size: 16px;
-  /*font-size: 1vw;*/
-}
-
-.large-purple {
-  /*position: absolute;*/
-  width: 50%;
-  /* height: 63vh; */
-  padding: 5px;
-  background: #9c83cc;
-  border-radius: 20px;
-  align-items: center;
-  justify-content: center;
-  /*display: flex;*/
-  margin: 10px;
-}
-
-img {
-  margin: 0 auto
-}
-
-.x-large-purple-clube {
-  /*position: absolute;*/
-  width: 100%;
-  /* height: 63vh; */
-  padding: 5px;
-  background: #9c83cc;
-  border-radius: 20px;
+.trophy {
   text-align: center;
-  justify-content: center;
-  display: flex;
-  flex-direction:column;
-  margin: 10px;
-  max-height: 650px
+  img { height: 150px; object-fit: contain; margin-bottom: 8px; }
+  &.empty img { filter: grayscale(1) opacity(0.35); }
 }
+.trophy-count { font-family: var(--font-display); font-weight: 800; font-size: 2.2rem; color: var(--gold); line-height: 1; }
+.trophy.empty .trophy-count { color: var(--muted); }
 
-#canvas {
-  width: 90%;
-  margin: 0 auto
+@media (max-width: 700px) {
+  .hero { flex-direction: column; text-align: center; padding: 24px 16px; }
+  .hero-crest { width: 120px; height: 120px; }
+  .hero-record { grid-template-columns: repeat(4, 1fr); gap: 8px; justify-content: stretch; }
+  .stat-big { font-size: 2rem; }
 }
-
-/* MOBILE */
-
-@media only screen and (max-device-width: 768px) {
-  .small-purple {
-    /*position: absolute;*/
-    width: 28%;
-    /* height: 23vh; */
-    background-color: #9c83cc;
-    border-radius: 20px;
-    align-items: center;
-    justify-content: center;
-    padding: 5px;
-    /*display: flex;*/
-    margin: 10px;
-    font-size: 12px;
-    /*font-size: 1vw;*/
-  }
-
-  .large-purple {
-    /*position: absolute;*/
-    width: 50%;
-    /* height: 63vh; */
-    padding: 5px;
-    background: #9c83cc;
-    border-radius: 20px;
-    align-items: center;
-    justify-content: center;
-    /*display: flex;*/
-    margin: 10px;
-  }
-
-}
-
 </style>

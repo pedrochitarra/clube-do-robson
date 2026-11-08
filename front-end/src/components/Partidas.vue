@@ -1,275 +1,196 @@
 <template>
-  <div>
-    <div class='background'>
-      <div class='background-partidas'>
-        <div class='xlarge-purple-partidas'>
-          <br>
-          <v-select
-            class="select"
-            placeholder = "Escolha a temporada"
-            v-model= "selectedSeason"
-            :items="opcoes"
-            item-text="label"
-            item-value="value"
-            v-on:input="getPartidas"
-            ></v-select>
+  <div class="page">
+    <h1 class="page-title">Partidas</h1>
+    <p class="page-subtitle">Jogos registrados por temporada</p>
 
-          <b-table :items="partidas" :fields="fields">
-            <template #cell(homeCrest)="data">
-              <b-img fluid center height="100%" width="100%" :src="'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l'+ data.value +'.png'" alt="..." />
-            </template>
-            <template #cell(awayCrest)="data">
-              <b-img fluid center height="100%" width="100%" :src="'https://fifa21.content.easports.com/fifa/fltOnlineAssets/05772199-716f-417d-9fe0-988fa9899c4d/2021/fifaweb/crests/256x256/l'+ data.value +'.png'" alt="..." />
-            </template>
-            <template #cell(matchId)="data">
-              <b-btn
-              variant="purple"
-              :to="{
-                name:'partida',
-                params: {partidaId: data.value}
-              }"
-              >Detalhes</b-btn>
-            </template>
-          </b-table>
+    <div class="seasons" v-if="seasons.length">
+      <button
+        v-for="s in seasons"
+        :key="s"
+        class="season-chip"
+        :class="{ active: s === season }"
+        @click="selectSeason(s)"
+      >Temporada {{ s }}</button>
+    </div>
+
+    <div class="grid grid-4 summary" v-if="partidas.length">
+      <div class="card-x"><span class="stat-big">{{ partidas.length }}</span><div class="stat-label">Jogos</div></div>
+      <div class="card-x"><span class="stat-big result-w">{{ resumo.w }}</span><div class="stat-label">Vitórias</div></div>
+      <div class="card-x"><span class="stat-big result-d">{{ resumo.d }}</span><div class="stat-label">Empates</div></div>
+      <div class="card-x"><span class="stat-big result-l">{{ resumo.l }}</span><div class="stat-label">Derrotas</div></div>
+    </div>
+
+    <div v-if="loading" class="loading"><v-progress-circular indeterminate color="primary"></v-progress-circular></div>
+
+    <div class="matches" v-else>
+      <router-link
+        v-for="p in partidas"
+        :key="p.matchId"
+        class="match card-x"
+        :class="'edge-' + p.result"
+        :to="{ name: 'partida', params: { partidaId: p.matchId } }"
+      >
+        <div class="match-date">
+          <span>{{ dia(p.timestamp) }}</span>
+          <small>{{ hora(p.timestamp) }}</small>
         </div>
-      </div>
+        <div class="team home" :class="{ us: p.homeClub === clubId }">
+          <span class="team-name">{{ p.partidasHomeClub.name }}</span>
+          <img :src="crest(p.partidasHomeClub)" :alt="p.partidasHomeClub.name">
+        </div>
+        <div class="score">
+          <span>{{ p.homeGoals }}</span><i>–</i><span>{{ p.awayGoals }}</span>
+        </div>
+        <div class="team away" :class="{ us: p.awayClub === clubId }">
+          <img :src="crest(p.partidasAwayClub)" :alt="p.partidasAwayClub.name">
+          <span class="team-name">{{ p.partidasAwayClub.name }}</span>
+        </div>
+        <span class="badge-result" :class="p.result">{{ { w: 'V', d: 'E', l: 'D' }[p.result] }}</span>
+      </router-link>
+
+      <p class="empty" v-if="!partidas.length && season">Nenhuma partida registrada nesta temporada.</p>
     </div>
   </div>
 </template>
 
 <script>
-// import clubesService from "../services/clubesService";
 import clubesPartidasService from '../services/clubesPartidas'
-// import partidasService from "../services/partidasService"
+import { crest } from '../utils/crest'
 
 export default {
   name: 'partidas',
   data () {
     return {
-      selectedSeason: {
-        label: 'Escolha a temporada',
-        value: null
-      },
-      fields: [
-        {
-          key: 'homeCrest',
-          label: '',
-          sortable: false
-        },
-        /* {
-          key: "partidasHomeClub.name",
-          label: "Casa",
-          sortable: false,
-        }, */
-        {
-          key: 'homeGoals',
-          label: '',
-          sortable: false
-        },
-        {
-          key: 'awayGoals',
-          label: '',
-          sortable: false
-        },
-        /* {
-          key: "partidasAwayClub.name",
-          label: "Fora",
-          sortable: false,
-        }, */
-        {
-          key: 'awayCrest',
-          label: '',
-          sortable: false
-        },
-        {
-          key: 'matchId',
-          label: '',
-          sortable: false
-        }
-      ],
-      opcoes: [],
-      model: {
-        opcoes: [],
-        selected: null
-      },
-      currentPartida: null,
-      message: '',
+      clubId: Number(this.$route.params.clubId),
       seasons: [],
+      season: null,
       partidas: [],
-      currentIndex: -1
+      loading: true
+    }
+  },
+  computed: {
+    resumo () {
+      const r = { w: 0, d: 0, l: 0 }
+      this.partidas.forEach(p => { r[p.result]++ })
+      return r
     }
   },
   methods: {
-    getPartidas (seasonId) {
-      const clubId = this.$route.params.clubId
-      console.log(clubId)
-      console.log(seasonId)
-      clubesPartidasService
-        .getBySeason(clubId, seasonId)
-        .then((response) => {
-          console.log(response.data.partidasSeason)
-          this.partidas = response.data.partidasSeason
-
-          console.log(this.partidas)
-
-          this.partidas.forEach((partida, i) => {
-            if (partida.partidasAwayClub.iscustomteam === 1) {
-              this.partidas[i].awayCrest = this.partidas[i].partidasAwayClub.customcrestid
-            } else if (partida.partidasAwayClub.iscustomteam === 0) {
-              this.partidas[i].awayCrest = this.partidas[i].partidasAwayClub.teamId
-            }
-            if (partida.partidasHomeClub.iscustomteam === 1) {
-              this.partidas[i].homeCrest = this.partidas[i].partidasHomeClub.customcrestid
-            } else if (partida.partidasHomeClub.iscustomteam === 0) {
-              this.partidas[i].homeCrest = this.partidas[i].partidasHomeClub.teamId
-            }
-          })
-
-          console.log(this.partidas)
-        })
-        .catch((e) => {
-          console.log(e)
-        })
+    crest,
+    dia (ts) {
+      return new Date(ts * 1000).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })
     },
-
-    async getSeasons (clubId) {
-      console.log(clubId)
-      const response = await clubesPartidasService.getSeasons(clubId)
-      console.log(response)
-      response.data.forEach((season) => {
-        if (season.seasonid != null) {
-          this.seasons.push(season.seasonid)
-        }
-      })
-      this.seasons = [...new Set(this.seasons)]
-      this.seasons = this.seasons.sort((a, b) => {
-        return b - a
-      })
-      console.log(this.seasons)
-      this.seasons.forEach(season => {
-        console.log(season)
-        this.opcoes.push({
-          label: 'Temporada ' + season,
-          value: season
-        })
-      })
-      console.log(this.opcoes)
+    hora (ts) {
+      return new Date(ts * 1000).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
     },
-
-    setActivePartida (partida, index) {
-      this.currentPartida = partida
-      this.currentIndex = index
+    // Resultado do ponto de vista do Clube do Robson
+    resultado (p) {
+      const nossos = p.homeClub === this.clubId ? Number(p.homeGoals) : Number(p.awayGoals)
+      const deles = p.homeClub === this.clubId ? Number(p.awayGoals) : Number(p.homeGoals)
+      return nossos > deles ? 'w' : nossos < deles ? 'l' : 'd'
+    },
+    async selectSeason (s) {
+      this.season = s
+      this.loading = true
+      const { data } = await clubesPartidasService.getBySeason(this.clubId, s)
+      this.partidas = data.partidasSeason
+        .map(p => ({ ...p, result: this.resultado(p) }))
+        .sort((a, b) => b.timestamp - a.timestamp)
+      this.loading = false
     }
-
   },
-
   async mounted () {
-    this.message = ''
-    console.log(this.$route.params)
-    await this.getSeasons(this.$route.params.clubId)
-    // this.getPartidas(null, this.$route.params.clubId);
+    const { data } = await clubesPartidasService.getSeasons(this.clubId)
+    this.seasons = [...new Set(data.map(s => s.seasonid).filter(s => s != null))].sort((a, b) => b - a)
+    if (this.seasons.length) {
+      await this.selectSeason(this.seasons[0])
+    } else {
+      this.loading = false
+    }
   }
 }
 </script>
 
-<style>
+<style scoped lang="scss">
+.loading { display: flex; justify-content: center; padding: 60px 0; }
 
-body {
-  background: #d1d1d1;
-  /*font-family: 'Muli', sans-serif;*/
+.seasons { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.season-chip {
+  background: var(--surface-2);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 6px 16px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  &:hover { color: var(--text); }
+  &.active { background: var(--gold); color: #120c1c; border-color: var(--gold); }
+}
 
-  margin: 0 auto;
-  /*flex-direction: column;*/
+.summary { margin-bottom: 20px; .card-x { text-align: center; padding: 16px; } }
+
+.matches { display: flex; flex-direction: column; gap: 10px; }
+
+.match {
+  display: grid;
+  grid-template-columns: 64px 1fr auto 1fr 32px;
   align-items: center;
-  justify-content: center;
-  height: 95vh;
-  overflow: auto;
-  height: auto;
-  color: #333333;
-  display: block
+  gap: 16px;
+  padding: 14px 18px;
+  color: var(--text) !important;
+  border-left: 4px solid transparent;
+  transition: transform 0.15s, background 0.15s;
+  &:hover { transform: translateX(3px); background: var(--surface-2); }
+  &.edge-w { border-left-color: var(--win); }
+  &.edge-d { border-left-color: var(--draw); }
+  &.edge-l { border-left-color: var(--loss); }
 }
 
-.list {
-  text-align: left;
-  max-width: 750px;
-  margin: auto;
-}
-
-td {
-  text-align: center !important;
-  vertical-align: middle !important
-}
-
-.background {
-  background: #d1d1d1;
-}
-
-td {
-  vertical-align: middle !important;
-}
-
-.edit-form {
-  max-width: 300px;
-  margin: auto;
-}
-
-.btable {
-  text-align: center;
-  vertical-align: middle;
-}
-
-.background-partidas {
-  /*position: relative;*/
-  width: 90vw;
-  /* height: 90vh; */
-  background: #d1d1d1;
-  /*display: flex;*/
-    align-items: center;
-  justify-content: center;
-  /*position: relative;*/
-  margin: 10px auto;
-}
-
-.xlarge-purple-partidas{
-
-  /*position: absolute;*/
-  width: 50%;
-  /* height: 63vh; */
-  padding: 5px;
-  background: #9c83cc;
-  border-radius: 20px;
-  align-items: center;
-  justify-content: center;
+.match-date {
   display: flex;
-  flex-direction:column;
-  margin: 0 auto;
-
+  flex-direction: column;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.1;
+  small { color: var(--muted); font-weight: 500; }
 }
 
-.b-table {
-  width: 90%
+.team {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  img { width: 44px; height: 44px; object-fit: contain; flex-shrink: 0; }
+  &.home { justify-content: flex-end; text-align: right; }
+  &.us .team-name { color: var(--gold); }
+}
+.team-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.score {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.9rem;
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 2px 14px;
+  i { color: var(--muted); font-style: normal; font-size: 1.2rem; }
 }
 
-@media only screen and (max-device-width: 768px) {
+.empty { color: var(--muted); text-align: center; padding: 40px 0; }
 
-  .xlarge-purple-partidas {
-    /*position: absolute;*/
-    width: 100%;
-    /* height: 63vh; */
-    padding: 5px;
-    background: #9c83cc;
-    border-radius: 20px;
-    align-items: center;
-    justify-content: center;
-    /*display: flex;*/
-    font-size: 12px;
-    margin: 10px;
-  }
-
-  .btn {
-    font-size: 12px
-  }
-
+@media (max-width: 700px) {
+  .match { grid-template-columns: 1fr auto 1fr; gap: 8px; padding: 12px; }
+  .match-date, .badge-result { display: none; }
+  .team { flex-direction: column; gap: 4px; text-align: center !important; justify-content: center !important; }
+  .team.home { flex-direction: column-reverse; }
+  .team-name { font-size: 0.8rem; max-width: 100%; }
+  .score { font-size: 1.5rem; }
 }
-
 </style>

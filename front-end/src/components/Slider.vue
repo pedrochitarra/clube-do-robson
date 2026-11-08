@@ -60,11 +60,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-.slither-slider{
-  text-align: center
-}
-
-</style>

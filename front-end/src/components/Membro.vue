@@ -1,643 +1,288 @@
 <template>
-<div>
-  <div v-if="currentMembro">
+  <div class="page" v-if="membro">
+    <router-link class="back" :to="{ name: 'membros', params: { clubId } }">
+      <v-icon small>mdi-arrow-left</v-icon> Elenco
+    </router-link>
 
-    <b-modal ref="my-modal" ok-only class='purple-modal'>
-        <div class='line-1-member'>
-          <div class='small-modal-purple'>
-            <strong>Ritmo <span>{{statsMembro.geralPace}}</span> </strong>
-            <p></p>
-            <span class="statsName">Aceleração</span> <span class="stats">{{statsMembro.aceleracao}}</span>
-            <br>
-            <span class="statsName">Pique</span> <span class="stats">{{statsMembro.pique}}</span>
-          </div>
-          <div class='small-modal-purple'>
-            <strong>Finalização {{statsMembro.geralFinishing}}</strong>
-            <p></p>
-            <span class="statsName">Chute</span> <span class="stats">{{statsMembro.finalizacao}}</span>
-            <br>
-            <span class="statsName">Cobrança de falta</span><span span class="stats">{{statsMembro.aceleracao}}</span>
-            <br>
-            <span class="statsName">Cabeceio</span><span class="stats">{{statsMembro.cabeceio}}</span>
-            <br>
-            <span class="statsName">Força do chute</span><span class="stats">{{statsMembro.forcachute}}</span>
-            <br>
-            <span class="statsName">Chutes de longe</span><span class="stats">{{statsMembro.chuteslonge}}</span>
-            <br>
-            <span class="statsName">Voleio</span><span class="stats">{{statsMembro.voleio}}</span>
-            <br>
-            <span class="statsName">Penâltis</span><span class="stats">{{statsMembro.penaltis}}</span>
-          </div>
+    <section class="profile">
+      <div class="fut-card">
+        <div class="fut-top">
+          <div class="fut-ovr">{{ overall }}</div>
+          <div class="fut-pos">{{ posicao }}</div>
+          <img class="fut-crest" src="/crests/99150901.png" alt="Clube do Robson">
         </div>
-      <div class='line-1-member'>
-        <div class='small-modal-purple'>
-            <strong>Passe {{statsMembro.geralPassing}}</strong>
-            <p></p>
-            <span class="statsName">Visão</span> <span class="stats">{{statsMembro.visao}}</span>
-            <br>
-            <span class="statsName">Cruzamento</span><span span class="stats">{{statsMembro.cruzamento}}</span>
-            <br>
-            <span class="statsName">Lançamento</span><span class="stats">{{statsMembro.lancamento}}</span>
-            <br>
-            <span class="statsName">Passe curto</span><span class="stats">{{statsMembro.passecurto}}</span>
-            <br>
-            <span class="statsName">Curva</span><span class="stats">{{statsMembro.curva}}</span>
-        </div>
-        <div class='small-modal-purple'>
-            <strong>Condução {{statsMembro.geralDribbling}}</strong>
-            <p></p>
-            <span class="statsName">Agilidade</span> <span class="stats">{{statsMembro.agilidade}}</span>
-            <br>
-            <span class="statsName">Equilíbrio</span><span span class="stats">{{statsMembro.equilibrio}}</span>
-            <br>
-            <span class="statsName">Posicionamento</span><span class="stats">{{statsMembro.posAtaque}}</span>
-            <br>
-            <span class="statsName">Controle de bola</span><span class="stats">{{statsMembro.controlebola}}</span>
-            <br>
-            <span class="statsName">Condução</span><span class="stats">{{statsMembro.conducao}}</span>
-        </div>
-      </div>
-      <div class='line-1-member'>
-        <div class='small-modal-purple'>
-            <strong>Defesa {{statsMembro.geralDefending}}</strong>
-            <p></p>
-            <span class="statsName">Interceptação</span> <span class="stats">{{statsMembro.interceptacao}}</span>
-            <br>
-            <span class="statsName">Marcação</span><span span class="stats">{{statsMembro.nocaodefensiva}}</span>
-            <br>
-            <span class="statsName">Dividida</span><span class="stats">{{statsMembro.divididaempe}}</span>
-            <br>
-            <span class="statsName">Carrinho</span><span class="stats">{{statsMembro.carrinho}}</span>
-        </div>
-        <div class='small-modal-purple'>
-            <strong>Físico {{statsMembro.geralPhysical}}</strong>
-            <p></p>
-            <span class="statsName">Impulsão</span> <span class="stats">{{statsMembro.impulsao}}</span>
-            <br>
-            <span class="statsName">Fôlego</span><span span class="stats">{{statsMembro.folego}}</span>
-            <br>
-            <span class="statsName">Força</span><span class="stats">{{statsMembro.forca}}</span>
-            <br>
-            <span class="statsName">Reação</span><span class="stats">{{statsMembro.reacao}}</span>
-            <br>
-            <span class="statsName">Combatividade</span><span class="stats">{{statsMembro.combatividade}}</span>
-            <br>
-            <span class="statsName">Frieza</span><span class="stats">{{statsMembro.frieza}}</span>
+        <img class="fut-photo" :src="face" :alt="nome" :class="{ placeholder: !robsoner }">
+        <div class="fut-name">{{ nome }}</div>
+        <div class="fut-attrs" v-if="geral">
+          <div v-for="a in principais" :key="a.label"><b>{{ a.value }}</b><span>{{ a.sigla }}</span></div>
         </div>
       </div>
 
-    </b-modal>
+      <div class="profile-info">
+        <h1 class="page-title">{{ nome }}</h1>
+        <p class="page-subtitle">{{ membro.name }}<template v-if="robsoner && robsoner.number"> · camisa {{ robsoner.number }}</template></p>
 
+        <div class="grid grid-3 facts">
+          <div class="card-x"><span class="stat-big">{{ membro.proHeight }}</span><div class="stat-label">Altura (cm)</div></div>
+          <div class="card-x" v-if="robsoner && robsoner.weight"><span class="stat-big">{{ robsoner.weight }}</span><div class="stat-label">Peso (kg)</div></div>
+          <div class="card-x" v-if="robsoner && robsoner.birthdate"><span class="stat-big small">{{ robsoner.birthdate }}</span><div class="stat-label">Nascimento</div></div>
+        </div>
+
+        <p class="fake-note" v-if="membro.ficticio">
+          <v-icon small color="secondary">mdi-robot-happy</v-icon>
+          Personagem fictício do clube: tem atributos, mas não entra nas estatísticas da EA.
+        </p>
+        <div class="grid grid-4 career" v-else>
+          <div class="card-x" v-for="s in carreira" :key="s.label">
+            <v-icon :color="s.color || 'primary'">{{ s.icon }}</v-icon>
+            <span class="stat-big">{{ s.value }}</span>
+            <div class="stat-label">{{ s.label }}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid grid-3 attrs" v-if="geral">
+      <div class="card-x" v-for="g in grupos" :key="g.label">
+        <h2 class="card-title-x">{{ g.label }} <span class="attr-total" :style="{ color: cor(g.total) }">{{ g.total }}</span></h2>
+        <div class="attr" v-for="a in g.itens" :key="a[0]">
+          <span>{{ a[0] }}</span>
+          <div class="bar"><div :style="{ width: a[1] + '%', background: cor(a[1]) }"></div></div>
+          <b :style="{ color: cor(a[1]) }">{{ a[1] }}</b>
+        </div>
+      </div>
+    </section>
   </div>
 
-  <div v-if="currentMembro">
-    <div class='background'>
-      <div class='background-member'>
-        <div class='line-1-member'>
-          <div class='small-purple'>
-            <b-img
-              fluid
-              height="150%"
-              width="150%"
-              v-bind:src="robsoner.face"
-              alt="..."
-            />
-            {{ currentMembro.proName }}
-          </div>
-          <div class='small-purple'>
-            <b-img
-              fluid
-              v-bind:src="
-                'https://www.ea.com/fifa/ultimate-team/web-app/content/21D4F1AC-91A3-458D-A64E-895AA6D871D1/2021/fut/items/images/mobile/flags/card/' +
-                currentMembro.proNationality +
-                '.png'
-              "
-            />
-            <p>Nacionalidade</p>
-
-            {{ currentMembro.proHeight }} cm
-            <p>Altura</p>
-
-            {{ robsoner.weight }} kg
-            <p>Peso</p>
-          </div>
-          <div class='small-purple'>
-            {{ robsoner.birthdate }}
-            <p>Nascimento</p>
-
-            {{ robsoner.position }}
-            <p>Posição</p>
-
-            {{ robsoner.number }}
-            <p>Número</p>
-          </div>
-        </div>
-
-        <!--ARRUMAR CANVAS
-        <div class='line-2-member'>
-          <div class='x-large-purple-member'>
-              <line-chart
-                class="hexagon"
-                v-if="chartData != null"
-                :chartData="chartData"
-                :options="chartOptions"
-              />
-
-              <b-btn  variant="purple" class="button-right" id="show-btn" @click="showModal">Detalhes</b-btn>
-          </div>
-        </div>-->
-        <div class='line-2-member'>
-          <div class='x-large-purple-member'>
-            <div class='stats-row'>
-              Jogos <img width=20px src="../assets/football-icons/field2.svg"/> {{ currentMembro.gamesPlayed }}
-            </div>
-            <div class='stats-row'>
-              Gols <img width=20px src="../assets/football-icons/football.svg"/> {{ currentMembro.goals }}
-            </div>
-            <div class='stats-row'>
-              Assistências <img width=20px src="../assets/football-icons/assistencia1.svg"/> {{ currentMembro.assists }}
-            </div>
-            <div class='stats-row'>
-              Melhor em campo <img width=20px src="../assets/football-icons/motm.svg"/> {{ currentMembro.manOfTheMatch }}
-            </div>
-            <div class='stats-row'>
-              Precisão dos Passes <img width=20px src="../assets/football-icons/precisaopasses.svg"/> {{ currentMembro.passSuccessRate }} %
-            </div>
-            <div class='stats-row'>
-              Passes <img width=20px src="../assets/football-icons/passes.svg"/> {{ currentMembro.passesMade }}
-            </div>
-            <div class='stats-row'>
-              Cartões Vermelhos <img width=20px src="../assets/football-icons/vermelho.svg"/> {{ currentMembro.redCards }}
-            </div>
-            <div class='stats-row'>
-              Precisão dos Chutes <img width=20px src="../assets/football-icons/playe.svg"/> {{ currentMembro.shotSuccessRate }} %
-            </div>
-            <div class='stats-row'>
-              Porcentagem de vitória <img width=20px src="../assets/football-icons/vitoria.svg"/> {{ currentMembro.winRate }} %
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="page loading" v-else>
+    <v-progress-circular indeterminate color="primary"></v-progress-circular>
   </div>
-</div>
 </template>
 
 <script>
 import membrosService from '../services/membrosService'
 import robsonService from '../services/robsonService'
-// import LineChart from '../components/RadarHex.vue'
+
+// Índices de proPos usados pela API da EA
+const POSICOES = ['GOL', 'LIB', 'ALD', 'LD', 'ZAD', 'ZAG', 'ZAE', 'LE', 'ALE', 'VOD', 'VOL', 'VOE', 'MD', 'MCD', 'MC', 'MCE', 'ME', 'MAD', 'MEI', 'MAE', 'SAD', 'SA', 'SAE', 'PD', 'ATD', 'ATA', 'ATE', 'PE']
+
+// Ordem dos atributos em vproattr (string "088|089|...")
+const ATRIBUTOS = ['aceleracao', 'pique', 'agilidade', 'equilibrio', 'impulsao', 'folego', 'forca', 'reacao', 'combatividade', 'frieza', 'interceptacao', 'posAtaque', 'visao', 'chuteslonge', 'forcachute', 'conducao', 'finalizacao', 'cobrancafalta', 'cabeceio', 'lancamento', 'passecurto', 'nocaodefensiva', 'cruzamento', 'controlebola', 'divididaempe', 'carrinho', 'voleio', 'curva', 'penaltis']
 
 export default {
   name: 'membro',
-  components: {
-
-  },
   data () {
     return {
-      modalShow: null,
-      currentMembro: null,
-      message: '',
-      positions: [
-        'GK',
-        'SW',
-        'RWB',
-        'RB',
-        'RCB',
-        'CB',
-        'LCB',
-        'LB',
-        'LWB',
-        'RDM',
-        'CDM',
-        'LDM',
-        'RM',
-        'RCM',
-        'CM',
-        'LCM',
-        'LM',
-        'RAM',
-        'CAM',
-        'LAM',
-        'RF',
-        'CF',
-        'LF',
-        'RW',
-        'RS',
-        'ST',
-        'LS',
-        'LW'
-      ],
-      arrayStats: [],
-      chartOptions: {
-        title: {
-          display: false
-        }
-        // backgroundColor: 'rgba(225, 21, 232, 1)'
-      },
-      chartData: {}
+      clubId: this.$route.params.clubId,
+      membro: null,
+      robsoner: null,
+      s: null
+    }
+  },
+  computed: {
+    nome () {
+      return this.robsoner ? this.robsoner.proName : this.membro.proName
+    },
+    face () {
+      return this.robsoner ? this.robsoner.face : require('@/assets/defaultMember.png')
+    },
+    // Fictícios não têm proOverall da EA: usa a média dos 6 atributos principais
+    overall () {
+      if (this.membro.proOverall) return this.membro.proOverall
+      if (!this.geral) return '—'
+      const v = Object.values(this.geral)
+      return Math.round(v.reduce((a, b) => a + b, 0) / v.length)
+    },
+    posicao () {
+      return POSICOES[parseInt(this.membro.proPos)] || ''
+    },
+    // Fórmulas dos 6 atributos principais do FIFA
+    geral () {
+      const s = this.s
+      if (!s) return null
+      const r = Math.round
+      return {
+        ritmo: r(s.pique * 0.55 + s.aceleracao * 0.45),
+        finalizacao: r(s.finalizacao * 0.45 + s.chuteslonge * 0.2 + s.forcachute * 0.2 + s.posAtaque * 0.05 + s.penaltis * 0.05 + s.voleio * 0.05),
+        passe: r(s.passecurto * 0.35 + s.visao * 0.2 + s.cruzamento * 0.2 + s.lancamento * 0.15 + s.curva * 0.05 + s.cobrancafalta * 0.05),
+        conducao: r(s.conducao * 0.5 + s.controlebola * 0.35 + s.agilidade * 0.1 + s.equilibrio * 0.05),
+        defesa: r(s.nocaodefensiva * 0.3 + s.divididaempe * 0.3 + s.interceptacao * 0.2 + s.cabeceio * 0.1 + s.carrinho * 0.1),
+        fisico: r(s.forca * 0.5 + s.folego * 0.25 + s.combatividade * 0.2 + s.impulsao * 0.05)
+      }
+    },
+    principais () {
+      const g = this.geral
+      return [
+        { sigla: 'RIT', label: 'Ritmo', value: g.ritmo },
+        { sigla: 'FIN', label: 'Finalização', value: g.finalizacao },
+        { sigla: 'PAS', label: 'Passe', value: g.passe },
+        { sigla: 'CON', label: 'Condução', value: g.conducao },
+        { sigla: 'DEF', label: 'Defesa', value: g.defesa },
+        { sigla: 'FIS', label: 'Físico', value: g.fisico }
+      ]
+    },
+    grupos () {
+      const s = this.s
+      const g = this.geral
+      return [
+        { label: 'Ritmo', total: g.ritmo, itens: [['Aceleração', s.aceleracao], ['Pique', s.pique]] },
+        { label: 'Finalização', total: g.finalizacao, itens: [['Finalização', s.finalizacao], ['Força do chute', s.forcachute], ['Chute de longe', s.chuteslonge], ['Posicionamento', s.posAtaque], ['Voleio', s.voleio], ['Pênaltis', s.penaltis]] },
+        { label: 'Passe', total: g.passe, itens: [['Passe curto', s.passecurto], ['Visão', s.visao], ['Cruzamento', s.cruzamento], ['Lançamento', s.lancamento], ['Curva', s.curva], ['Cobrança de falta', s.cobrancafalta]] },
+        { label: 'Condução', total: g.conducao, itens: [['Condução', s.conducao], ['Controle de bola', s.controlebola], ['Agilidade', s.agilidade], ['Equilíbrio', s.equilibrio], ['Reação', s.reacao], ['Frieza', s.frieza]] },
+        { label: 'Defesa', total: g.defesa, itens: [['Noção defensiva', s.nocaodefensiva], ['Dividida em pé', s.divididaempe], ['Interceptação', s.interceptacao], ['Cabeceio', s.cabeceio], ['Carrinho', s.carrinho]] },
+        { label: 'Físico', total: g.fisico, itens: [['Força', s.forca], ['Fôlego', s.folego], ['Combatividade', s.combatividade], ['Impulsão', s.impulsao]] }
+      ]
+    },
+    carreira () {
+      const m = this.membro
+      return [
+        { label: 'Jogos', value: m.gamesPlayed, icon: 'mdi-soccer-field' },
+        { label: 'Gols', value: m.goals, icon: 'mdi-soccer' },
+        { label: 'Assistências', value: m.assists, icon: 'mdi-shoe-cleat' },
+        { label: 'Craque do jogo', value: m.manOfTheMatch, icon: 'mdi-star', color: 'secondary' },
+        { label: 'Vitórias', value: m.winRate + '%', icon: 'mdi-trophy', color: 'success' },
+        { label: 'Precisão de passe', value: m.passSuccessRate + '%', icon: 'mdi-target' },
+        { label: 'Precisão de chute', value: m.shotSuccessRate + '%', icon: 'mdi-bullseye-arrow' },
+        { label: 'Cartões vermelhos', value: m.redCards, icon: 'mdi-card', color: 'error' }
+      ]
     }
   },
   methods: {
-    showModal () {
-      this.$refs['my-modal'].show()
-    },
-    async getMembro (id, clubId) {
-      const response = await membrosService.get(id, clubId)
-      this.currentMembro = response.data[0]
-      console.log('ROBSONER', this.robsoner)
-      console.log('MEMBRO::', this.currentMembro)
-      if (this.robsoner.isfake) {
-        this.arrayStats = this.robsoner.vproattr.split('|')
-        this.currentMembro = this.robsoner
-      } else {
-        this.arrayStats = this.currentMembro.membrosMembrosPartidas[0].vproattr.split('|')
-      }
-      console.log(this.arrayStats)
-
-      this.statsMembro = {
-        aceleracao: parseInt(this.arrayStats[0]),
-        pique: parseInt(this.arrayStats[1]),
-        agilidade: parseInt(this.arrayStats[2]),
-        equilibrio: parseInt(this.arrayStats[3]),
-        impulsao: parseInt(this.arrayStats[4]),
-        folego: parseInt(this.arrayStats[5]),
-        forca: parseInt(this.arrayStats[6]),
-        reacao: parseInt(this.arrayStats[7]),
-        combatividade: parseInt(this.arrayStats[8]),
-        frieza: parseInt(this.arrayStats[9]),
-        interceptacao: parseInt(this.arrayStats[10]),
-        posAtaque: parseInt(this.arrayStats[11]),
-        visao: parseInt(this.arrayStats[12]),
-        chuteslonge: parseInt(this.arrayStats[13]),
-        forcachute: parseInt(this.arrayStats[14]),
-        conducao: parseInt(this.arrayStats[15]),
-        finalizacao: parseInt(this.arrayStats[16]),
-        cobrancafalta: parseInt(this.arrayStats[17]),
-        cabeceio: parseInt(this.arrayStats[18]),
-        lancamento: parseInt(this.arrayStats[19]),
-        passecurto: parseInt(this.arrayStats[20]),
-        nocaodefensiva: parseInt(this.arrayStats[21]),
-        cruzamento: parseInt(this.arrayStats[22]),
-        controlebola: parseInt(this.arrayStats[23]),
-        divididaempe: parseInt(this.arrayStats[24]),
-        carrinho: parseInt(this.arrayStats[25]),
-        voleio: parseInt(this.arrayStats[26]),
-        curva: parseInt(this.arrayStats[27]),
-        penaltis: parseInt(this.arrayStats[28]),
-        goleiro: parseInt(this.arrayStats[29]),
-        mergulho: parseInt(this.arrayStats[30]),
-        manejo: parseInt(this.arrayStats[31]),
-        chutegoleiro: parseInt(this.arrayStats[32]),
-        reflexos: parseInt(this.arrayStats[33])
-      }
-
-      this.statsMembro.geralFinishing =
-        this.statsMembro.finalizacao * 0.45 +
-        this.statsMembro.chuteslonge * 0.2 +
-        this.statsMembro.forcachute * 0.2 +
-        this.statsMembro.posAtaque * 0.05 +
-        this.statsMembro.penaltis * 0.05 +
-        this.statsMembro.voleio * 0.05
-
-      this.statsMembro.geralFinishing = Math.round(
-        this.statsMembro.geralFinishing
-      )
-
-      this.statsMembro.geralPace =
-        this.statsMembro.pique * 0.55 + this.statsMembro.aceleracao * 0.45
-
-      this.statsMembro.geralPace = Math.round(
-        this.statsMembro.geralPace
-      )
-
-      this.statsMembro.geralPassing =
-        this.statsMembro.passecurto * 0.35 +
-        this.statsMembro.visao * 0.2 +
-        this.statsMembro.cruzamento * 0.2 +
-        this.statsMembro.lancamento * 0.15 +
-        this.statsMembro.curva * 0.05 +
-        this.statsMembro.cobrancafalta * 0.05
-
-      this.statsMembro.geralPassing = Math.round(
-        this.statsMembro.geralPassing
-      )
-
-      this.statsMembro.geralDribbling =
-        this.statsMembro.conducao * 0.5 +
-        this.statsMembro.controlebola * 0.35 +
-        this.statsMembro.agilidade * 0.1 +
-        this.statsMembro.equilibrio * 0.05
-
-      this.statsMembro.geralDribbling = Math.round(
-        this.statsMembro.geralDribbling
-      )
-
-      this.statsMembro.geralDefending =
-        this.statsMembro.nocaodefensiva * 0.3 +
-        this.statsMembro.divididaempe * 0.3 +
-        this.statsMembro.interceptacao * 0.2 +
-        this.statsMembro.cabeceio * 0.1 +
-        this.statsMembro.carrinho * 0.1
-
-      this.statsMembro.geralDefending = Math.round(
-        this.statsMembro.geralDefending
-      )
-
-      this.statsMembro.geralPhysical =
-        this.statsMembro.forca * 0.5 +
-        this.statsMembro.folego * 0.25 +
-        this.statsMembro.combatividade * 0.2 +
-        this.statsMembro.impulsao * 0.05
-
-      this.statsMembro.geralPhysical = Math.round(
-        this.statsMembro.geralPhysical
-      )
-
-      this.chartData.datasets = []
-      this.chartData.datasets.push({
-        // backgroundColor: 'rgba(225, 21, 232, 0.1)',
-        label: '',
-        data: [
-          this.statsMembro.geralFinishing,
-          this.statsMembro.geralPassing,
-          this.statsMembro.geralDribbling,
-          this.statsMembro.geralDefending,
-          this.statsMembro.geralPhysical,
-          this.statsMembro.geralPace
-        ]
-      })
-
-      console.log(this.statsMembro)
-      this.chartData.labels = [
-        'Finalização',
-        'Passe',
-        'Condução',
-        'Defesa',
-        'Físico',
-        'Ritmo'
-      ]
-
-      console.log(this.chartData)
-      console.log(this.currentMembro)
-
-      this.positions.forEach((pos, i) => {
-        console.log(pos, i)
-        if (i === parseInt(this.currentMembro.proPos)) {
-          this.robsoner.position = pos
-        }
-      })
-      console.log(this.robsoner)
-    },
-
-    async getRobsoner (name) {
-      robsonService.get(name).then((response) => {
-        this.robsoner = response.data[0]
-        console.log(response.data)
-
-        console.log(this.robsoner)
-      })
+    cor (v) {
+      return v >= 85 ? 'var(--win)' : v >= 70 ? 'var(--gold)' : v >= 50 ? '#f59f4a' : 'var(--loss)'
     }
   },
-
   async mounted () {
-    this.message = ''
-    console.log(this.$route.params)
-    await this.getRobsoner(this.$route.params.id)
-    await this.getMembro(this.$route.params.id, this.$route.params.clubId)
-    /* const myLine = document.getElementById('radar-chart').getContext('2d')
-    console.log(myLine)
-    const url = myLine.canvas.toDataURL()
-    const canvasDiv = document.getElementById('radar-chart')
-    document.getElementById('url').src = url
-    canvasDiv.style.display = 'none'
-    console.log(url) */
+    const { id } = this.$route.params
+    const [membro, robsoner] = await Promise.all([
+      membrosService.get(id, this.clubId),
+      robsonService.get(id)
+    ])
+    this.robsoner = robsoner.data[0] || null
+    // Personagens fictícios (Robsoners com isfake) não existem na tabela Membros
+    this.membro = membro.data[0] || {
+      ficticio: true,
+      name: id,
+      proName: this.robsoner.proName,
+      proPos: this.robsoner.proPos,
+      proHeight: this.robsoner.proHeight
+    }
+
+    const partidas = this.membro.membrosMembrosPartidas || []
+    const attr = partidas.length ? partidas[0].vproattr : this.robsoner && this.robsoner.vproattr
+    if (attr) {
+      const valores = attr.split('|').map(v => parseInt(v))
+      this.s = Object.fromEntries(ATRIBUTOS.map((nome, i) => [nome, valores[i]]))
+    }
   }
 }
-
 </script>
 
-<style>
-.edit-form {
-  max-width: 300px;
-  margin: auto;
-}
+<style scoped lang="scss">
+.loading { display: flex; justify-content: center; padding-top: 120px; }
 
-div.col{
-  text-align: center !important;
-}
-
-.btable {
-  text-align: center;
-  vertical-align: middle;
-  table-layout: fixed;
-}
-
-.card {
-  text-align: center;
-  vertical-align: middle;
-  table-layout: fixed;
-}
-
-#radar-chart {
-  margin: 0 auto;
-}
-
-.centerVertical {
-  margin: auto 0;
-}
-
-.button-right{
-  float: right
-}
-
-.stats {
-  float: right;
-}
-
-.statsName {
-  float: left;
-}
-
-.card-body {
-  vertical-align: center;
-}
-
-.row {
-     display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.background {
-  background: #d1d1d1;
-}
-
-.background-member {
-  /*position: relative;*/
-  width: 90vw;
-  /* height: 90vh; */
-  background: #d1d1d1;
-  /*display: flex;*/
-  /*position: relative;*/
-  margin: 10px auto;
-}
-
-.line-1-member {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  position: relative;
-  margin: 0 auto;
-}
-
-.line-2-member {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  margin: 0 auto;
-}
-
-.small-purple {
-  /*position: absolute;*/
-  width: 28%;
-  /* height: 23vh; */
-  background-color: #9c83cc;
-  border-radius: 20px;
+.back {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 5px;
-  /*display: flex;*/
-  margin: 10px;
-  font-size: 16px;
-  /*font-size: 1vw;*/
+  gap: 4px;
+  color: var(--muted) !important;
+  margin-bottom: 16px;
+  font-weight: 600;
+  .v-icon { color: inherit; }
+  &:hover { color: var(--text) !important; }
 }
 
-.large-purple {
-  /*position: absolute;*/
-  width: 50%;
-  /* height: 63vh; */
-  padding: 5px;
-  background: #9c83cc;
-  border-radius: 20px;
+.profile { display: flex; gap: 28px; align-items: flex-start; margin-bottom: 24px; }
+
+.fut-card {
+  flex-shrink: 0;
+  width: 260px;
+  padding: 18px 18px 22px;
+  border-radius: 22px;
+  background:
+    radial-gradient(260px 200px at 50% 20%, rgba(245, 197, 24, 0.35), transparent 70%),
+    linear-gradient(160deg, #3a2758, #1c1329 70%);
+  border: 1px solid rgba(245, 197, 24, 0.4);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  position: relative;
   text-align: center;
-  justify-content: center;
+}
+.fut-top {
+  position: absolute;
+  top: 18px;
+  left: 20px;
   display: flex;
-  flex-direction:column;
-  margin: 10px;
-}
-
-.x-large-purple-member {
-  /*position: absolute;*/
-  width: 100%;
-  /* height: 63vh; */
-  padding: 5px;
-  background: #9c83cc;
-  border-radius: 20px;
-  text-align: center;
-  justify-content: center;
-  display: flex;
-  flex-direction:column;
-  margin: 10px;
-  max-height: 650px
-}
-
-.row {
-  margin: auto 0
-}
-
-.modal-content{
-  background-color: #432875;
-  border: 0
-}
-
-.modal-body{
-  border-color: #432875
-}
-
-.close{
-  color: #fff
-}
-
-.close:hover {
-  color: #432875
-}
-
-.small-modal-purple {
-  /*position: absolute;*/
-  width: 45%;
-  /* height: 23vh; */
-  background-color: #9c83cc;
-  border-radius: 20px;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 5px;
-  /*display: flex;*/
-  margin: 10px;
-  font-size: 16px;
-  /*font-size: 1vw;*/
+  font-family: var(--font-display);
+  line-height: 1;
+}
+.fut-ovr { font-weight: 800; font-size: 3rem; color: var(--gold); }
+.fut-pos { font-weight: 700; font-size: 1.2rem; margin-bottom: 8px; }
+.fut-crest { width: 32px; height: 32px; object-fit: contain; }
+.fut-photo {
+  width: 190px;
+  height: 190px;
+  object-fit: cover;
+  object-position: top;
+  margin-left: 30px;
+  &.placeholder { object-fit: contain; padding: 30px; opacity: 0.4; }
+}
+.fut-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.7rem;
+  text-transform: uppercase;
+  border-top: 1px solid rgba(245, 197, 24, 0.4);
+  border-bottom: 1px solid rgba(245, 197, 24, 0.4);
+  margin: 4px 0 12px;
+  padding: 2px 0;
+}
+.fut-attrs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px 10px;
+  font-family: var(--font-display);
+  div { display: flex; gap: 6px; justify-content: center; align-items: baseline; }
+  b { font-size: 1.35rem; font-weight: 800; }
+  span { color: var(--muted); font-weight: 600; }
 }
 
-.btn.btn-primary {
-  background-color: #9c83cc;
-  border-color: #9c83cd
+.profile-info { flex: 1; min-width: 0; }
+.facts, .career { margin-bottom: 16px; }
+.facts .card-x, .career .card-x { padding: 14px 16px; }
+.stat-big.small { font-size: 1.6rem; }
+.career {
+  .card-x { display: flex; flex-direction: column; gap: 4px; }
+  .stat-big { font-size: 2rem; }
 }
 
-.stats-row {
-  padding: 20px;
-  text-align: center;
-  justify-content: space-between;
-
+.fake-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
 }
 
-#canvas {
-  width: 90%;
-  margin: 10px
+.attr-total { float: right; font-size: 1.4rem; }
+.attr {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px 26px;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+  font-size: 0.88rem;
+  span { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  b { font-family: var(--font-display); font-size: 1.1rem; text-align: right; }
+  .bar { height: 6px; }
 }
 
-img {
-  margin: 0 auto
+@media (max-width: 800px) {
+  .profile { flex-direction: column; align-items: center; }
+  .profile-info { width: 100%; }
 }
-
-/* MOBILE */
-@media only screen and (max-device-width: 768px) {
-  .small-purple {
-    /*position: absolute;*/
-    width: 28%;
-    /* height: 23vh; */
-    background-color: #9c83cc;
-    border-radius: 20px;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    /*display: flex;*/
-    margin: 10px;
-    font-size: 12px;
-    /*font-size: 1vw;*/
-  }
-
-  .large-purple {
-    /*position: absolute;*/
-    width: 50%;
-    /* height: 63vh; */
-    padding: 1px;
-    background: #9c83cc;
-    border-radius: 20px;
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    flex-direction:column;
-    font-size: 12px;
-    /*display: flex;*/
-    margin: 10px;
-  }
-
-  .row {
-    justify-content: space-between
-  }
-
-}
-
 </style>
