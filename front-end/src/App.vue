@@ -3,7 +3,7 @@
     <header class="topbar">
       <div class="topbar-inner">
         <router-link to="/" class="brand">
-          <img src="/crests/99150901.png" alt="Escudo do Clube do Robson">
+          <img :src="$base + 'crests/99150901.png'" alt="Escudo do Clube do Robson">
           <span>Clube do Robson</span>
         </router-link>
         <nav class="nav">

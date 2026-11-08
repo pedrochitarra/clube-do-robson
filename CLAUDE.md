@@ -23,6 +23,9 @@ Correções de dados vão no banco do clubedorobson-py, nunca aqui. `scripts/dum
 `data/` está no `.gitignore`. `sqlite3` é dependência nativa: no npm 11+ precisa de `npm install-scripts approve sqlite3`. `config/config.json` é para o sequelize-cli e usa `DATABASE_URL`.
 Front usa `baseURL: '/api'` (relativo, `front-end/src/http-common.js`); em `npm run serve` o proxy do `vue.config.js` manda `/api` para `localhost:5500`. Build no Node 24: `NODE_OPTIONS=--openssl-legacy-provider npm run build` (webpack 4).
 
+## GitHub Pages
+`.github/workflows/pages.yml` publica o front em https://pedrochitarra.github.io/clube-do-robson/ a cada push na `main` (Node 16, `VUE_APP_STATIC=true`, `PUBLIC_PATH=/clube-do-robson/`). Não há back-end: a API vira JSON estático em `front-end/public/api/` (commitado), gerado com `node scripts/export_static.js` (sobe o Express contra o SQLite e percorre as rotas). Rode de novo após `build_sqlite.py`. Caminhos de assets usam `process.env.BASE_URL` / `this.$base`.
+
 ## Estrutura
 - `app/models/` — Sequelize, carregados por `index.js`. Tabelas: `Clubes`, `Membros` (PK = nome do jogador), `Partidas`, `ClubesPartidas` (stats do clube por partida, PK `matchId+clubId`), `MembrosPartidas` (PK `playername+matchId`), `Seasonal` (PK clubid), `Robsoners` (cadastro manual dos membros do clube), `Estadios`.
 - `app/controllers/` + `app/routes/` — um par por recurso, montados em `/api/<recurso>` (`clubes`, `clubesPartidas`, `membros`, `membrosPartidas`, `partidas`, `robsoners`, `seasonals`, `stadiums`).

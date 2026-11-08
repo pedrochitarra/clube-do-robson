@@ -10,6 +10,7 @@ import vuetify from './plugins/vuetify'
 import SlitherSlider from 'slither-slider'
 
 Vue.config.productionTip = false
+Vue.prototype.$base = process.env.BASE_URL
 new Vue({
   router,
   vuetify,

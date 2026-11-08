@@ -9,7 +9,7 @@
         <div class="fut-top">
           <div class="fut-ovr">{{ overall }}</div>
           <div class="fut-pos">{{ posicao }}</div>
-          <img class="fut-crest" src="/crests/99150901.png" alt="Clube do Robson">
+          <img class="fut-crest" :src="$base + 'crests/99150901.png'" alt="Clube do Robson">
         </div>
         <img class="fut-photo" :src="face" :alt="nome" :class="{ placeholder: !robsoner }">
         <div class="fut-name">{{ nome }}</div>

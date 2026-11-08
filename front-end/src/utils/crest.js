@@ -7,5 +7,5 @@ export function crestId (clube) {
 
 export function crest (clube) {
   const id = crestId(clube)
-  return id ? `/crests/${id}.png` : '/crests/99150901.png'
+  return `${process.env.BASE_URL}crests/${id || 99150901}.png`
 }
