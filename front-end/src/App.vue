@@ -3,7 +3,7 @@
 
     <v-app-bar
       app
-      color="purple"
+      color="transparent"
       dark
 
     >
@@ -14,7 +14,7 @@
           contain
           :src="`${baseUrl}crests/99150901.png`"
           transition="scale-transition"
-          width="40"
+          width="44"
         />
 
         <v-img

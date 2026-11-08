@@ -8,6 +8,7 @@ import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import 'bootstrap'
 import vuetify from './plugins/vuetify'
 import SlitherSlider from 'slither-slider'
+import './assets/styles/python-theme.scss'
 
 Vue.config.productionTip = false
 new Vue({
