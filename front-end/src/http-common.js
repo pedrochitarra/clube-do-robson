@@ -1,12 +1,11 @@
 import axios from 'axios'
 
-// baseURL: 'http://localhost:5000/api' for local
-// baseURL: 'https://clubedorobson.herokuapp.com/api' for build
-
+// Relativo: o build é servido pelo próprio Express. Em `npm run serve`,
+// o devServer.proxy do vue.config.js encaminha /api para localhost:5500
 export default axios.create({
-  baseURL: 'https://clubedorobson.herokuapp.com/api',
-  // baseURL: 'http://localhost:5500/api',
-  // baseURL: 'http://192.168.0.14:5500/api',
+  // No GitHub Pages, informe VUE_APP_API_URL com a URL do backend Express.
+  // Localmente, o proxy continua encaminhando /api para localhost:5500.
+  baseURL: process.env.VUE_APP_API_URL || '/api',
   headers: {
     'Content-type': 'application/json'
   }
