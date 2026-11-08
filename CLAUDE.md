@@ -25,7 +25,7 @@ Front usa `baseURL: '/api'` (relativo, `front-end/src/http-common.js`); em `npm 
 
 ## GitHub Pages (front estático)
 O front é um port direto do painel Streamlit do `clubedorobson-py` (mesmo CSS, mesmas telas) e **não usa o Express**: lê `front-end/public/data/clubedorobson.json`, snapshot do banco único gerado por `python scripts/export_snapshot.py` (rodar de novo quando o banco do Python mudar e commitar). `src/data.js` espelha o `src/data.py`, `src/utils/ui.js` o `src/ui.py`, `src/styles/theme.css` é o CSS do `ui.py`. Rotas (hash): `/clube`, `/jogadores`, `/jogadores/:tag`, `/partidas?t=<temporada>`, `/partidas/:id` (URLs antigas redirecionam).
-`.github/workflows/deploy-pages.yml` builda (`PUBLIC_PATH=/clube-do-robson/`) e publica no branch `gh-pages` a cada push na `main`/`master`: https://pedrochitarra.github.io/clube-do-robson/. Imagens: `public/crests`, `public/players` (inclui `_default.png`) e `public/trophies`, copiadas do `clubedorobson-py/static`.
+`.github/workflows/deploy-pages.yml` builda (`PUBLIC_PATH=/clube-do-robson/`) e publica no branch `gh-pages` a cada push na `main`: https://pedrochitarra.github.io/clube-do-robson/. Imagens: `public/crests`, `public/players` (inclui `_default.png`) e `public/trophies`, copiadas do `clubedorobson-py/static`.
 
 ## Estrutura
 - `app/models/` — Sequelize, carregados por `index.js`. Tabelas: `Clubes`, `Membros` (PK = nome do jogador), `Partidas`, `ClubesPartidas` (stats do clube por partida, PK `matchId+clubId`), `MembrosPartidas` (PK `playername+matchId`), `Seasonal` (PK clubid), `Robsoners` (cadastro manual dos membros do clube), `Estadios`.
